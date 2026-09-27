@@ -1,0 +1,37 @@
+ARENA RED STAR POINT BALL — V5
+
+Projeto PHP puro para TCC.
+
+NOVIDADES DA V5
+- Calendário de horários disponível após o login, com navegação mensal.
+- Todo agendamento ativo é mostrado automaticamente no calendário.
+- Reservas agora possuem horário de início e horário de fim.
+- O sistema bloqueia reservas com períodos sobrepostos e confirmações conflitantes no Campo 1.
+- Pagamento selecionável: Pix, dinheiro ou cartão; QR Code Pix é exibido somente ao escolher Pix.
+- Valor automático de R$ 120 por hora (ex.: 2h = R$ 240).
+- O cliente solicita a confirmação após pagar por Pix; o administrador confirma o Pix e a reserva.
+- Recuperação de senha por código de 6 dígitos enviado por e-mail, válido por 10 minutos.
+
+CONFIGURAÇÃO DO ENVIO DE E-MAIL (GMAIL)
+1. Copie email_config.php.example e renomeie a cópia para email_config.php.
+2. Informe seu Gmail e uma senha de app do Google nesse novo arquivo.
+3. No Google, ative a verificação em duas etapas e crie uma senha de app para "Mail".
+4. Importe o banco.sql novamente ou crie a tabela recuperacoes_senha para ativar a recuperação de senha.
+5. Não envie o arquivo email_config.php para outras pessoas, pois ele contém a senha de app.
+
+RECURSOS MANTIDOS DA V4
+- Logo oficial atualizada em todas as telas.
+- Visual refinado inspirado no mockup vermelho/preto.
+- Apenas 1 campo society em todo o sistema.
+- Login, cadastro de cliente, área do usuário e painel administrativo.
+- Senhas com password_hash/password_verify.
+- Admin padrão: admin@arenaredstar.com / admin123
+
+INSTALAÇÃO NO XAMPP
+1. Copie a pasta arena-red-star para C:\xampp\htdocs\
+2. Inicie Apache e MySQL.
+3. Acesse http://localhost/phpmyadmin
+4. Importe banco.sql (ele recria as tabelas).
+5. Acesse http://localhost/arena-red-star/
+
+ATENÇÃO: ao importar banco.sql, os dados anteriores das tabelas serão apagados porque o arquivo usa DROP TABLE para facilitar a instalação do TCC.

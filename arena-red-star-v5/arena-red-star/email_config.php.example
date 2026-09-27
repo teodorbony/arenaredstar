@@ -1,0 +1,8 @@
+<?php
+// Copie este arquivo para email_config.php e preencha os dados do Gmail remetente.
+// Use uma senha de app do Google, nunca a senha normal da conta.
+return [
+    'email' => 'seuemail@gmail.com',
+    'senha_app' => 'cole_a_senha_de_app_aqui',
+    'nome' => 'Arena Red Star',
+];
