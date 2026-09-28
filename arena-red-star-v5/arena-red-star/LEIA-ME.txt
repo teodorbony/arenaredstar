@@ -16,8 +16,8 @@ CONFIGURAÇÃO DO ENVIO DE E-MAIL (GMAIL)
 1. Copie email_config.php.example e renomeie a cópia para email_config.php.
 2. Informe seu Gmail e uma senha de app do Google nesse novo arquivo.
 3. No Google, ative a verificação em duas etapas e crie uma senha de app para "Mail".
-4. Importe o banco.sql novamente ou crie a tabela recuperacoes_senha para ativar a recuperação de senha.
-5. Não envie o arquivo email_config.php para outras pessoas, pois ele contém a senha de app.
+4. Se o banco já existe, execute o arquivo migracao_recuperacao_senha.sql no phpMyAdmin para criar a tabela sem apagar seus dados. Para uma instalação nova, banco.sql já cria essa tabela.
+5. Não envie o arquivo email_config.php para outras pessoas, pois ele contém a senha de app. O envio só funciona depois de configurar esse arquivo no servidor.
 
 RECURSOS MANTIDOS DA V4
 - Logo oficial atualizada em todas as telas.
