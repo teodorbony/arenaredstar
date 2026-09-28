@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         $codigo=preg_replace('/\D/','',$_POST['codigo']??''); $senha=$_POST['senha']??''; $confirmacao=$_POST['confirmacao']??'';
         if(strlen($codigo)!==6 || strlen($senha)<6 || $senha!==$confirmacao) $erro='Confira o código e use uma senha com pelo menos 6 caracteres.';
         else {
-            $stmt=$pdo->prepare('SELECT r.id,r.usuario_id,r.codigo_hash FROM recuperacoes_senha r INNER JOIN usuarios u ON u.id=r.usuario_id WHERE u.email=:email AND r.usado_em IS NULL AND r.expira_em > NOW() ORDER BY r.id DESC LIMIT 1'); $stmt->execute(['email'=>$email]); $rec=$stmt->fetch();
-            if(!$rec || !password_verify($codigo,$rec['codigo_hash'])) { if($rec) $pdo->prepare('UPDATE recuperacoes_senha SET tentativas=tentativas+1 WHERE id=:id')->execute(['id'=>$rec['id']]); $erro='Código inválido ou expirado.'; }
+            $stmt=$pdo->prepare('SELECT r.id,r.usuario_id,r.codigo_hash FROM recuperacoes_senha r INNER JOIN usuarios u ON u.id=r.usuario_id WHERE u.email=:email AND r.usado_em IS NULL AND r.expira_em > NOW() AND r.tentativas < 5 ORDER BY r.id DESC LIMIT 1'); $stmt->execute(['email'=>$email]); $rec=$stmt->fetch();
+            if(!$rec || !password_verify($codigo,$rec['codigo_hash'])) { if($rec) $pdo->prepare('UPDATE recuperacoes_senha SET tentativas=tentativas+1 WHERE id=:id AND tentativas < 5')->execute(['id'=>$rec['id']]); $erro='Código inválido ou expirado.'; }
             else { $pdo->beginTransaction(); $pdo->prepare('UPDATE usuarios SET senha=:senha WHERE id=:id')->execute(['senha'=>password_hash($senha,PASSWORD_DEFAULT),'id'=>$rec['usuario_id']]); $pdo->prepare('UPDATE recuperacoes_senha SET usado_em=NOW() WHERE id=:id')->execute(['id'=>$rec['id']]); $pdo->commit(); unset($_SESSION['reset_email']); $_SESSION['sucesso_login']='Senha alterada. Faça login com sua nova senha.'; header('Location: login.php'); exit; }
         }
     }
