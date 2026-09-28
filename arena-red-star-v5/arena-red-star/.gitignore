@@ -1,0 +1,2 @@
+# Configuração local com credenciais; nunca enviar ao GitHub.
+/email_config.php
