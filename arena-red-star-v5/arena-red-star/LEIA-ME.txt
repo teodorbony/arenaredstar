@@ -13,11 +13,11 @@ NOVIDADES DA V5
 - Recuperação de senha por código de 6 dígitos enviado por e-mail, válido por 10 minutos.
 
 CONFIGURAÇÃO DO ENVIO DE E-MAIL (GMAIL)
-1. Copie email_config.php.example e renomeie a cópia para email_config.php.
-2. Informe seu Gmail e uma senha de app do Google nesse novo arquivo.
-3. No Google, ative a verificação em duas etapas e crie uma senha de app para "Mail".
-4. Se o banco já existe, execute o arquivo migracao_recuperacao_senha.sql no phpMyAdmin para criar a tabela sem apagar seus dados. Para uma instalação nova, banco.sql já cria essa tabela.
-5. Não envie o arquivo email_config.php para outras pessoas, pois ele contém a senha de app. O envio só funciona depois de configurar esse arquivo no servidor.
+1. Copie email_config.php.example para email_config.php na mesma pasta. O endereço remetente e o nome Arena Red Star já vêm preenchidos.
+2. No Google, ative a verificação em duas etapas e gere uma senha de app para "Mail".
+3. Cole a nova senha de app no campo senha_app do arquivo email_config.php. O arquivo está no .gitignore e não deve ser enviado ao GitHub.
+4. Se o banco já existe, execute migracao_recuperacao_senha.sql no phpMyAdmin para criar a tabela sem apagar os dados. Para instalação nova, banco.sql já cria essa tabela.
+5. O envio só funciona depois de configurar o arquivo local email_config.php no servidor.
 
 RECURSOS MANTIDOS DA V4
 - Logo oficial atualizada em todas as telas.
