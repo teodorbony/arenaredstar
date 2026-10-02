@@ -5,6 +5,12 @@ ALTER TABLE agendamentos MODIFY status ENUM('Pendente','Confirmado','Cancelado',
 DELIMITER $$
 CREATE PROCEDURE arena_melhorias_20261002()
 BEGIN
+ IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='valor') THEN
+  ALTER TABLE agendamentos ADD valor DECIMAL(10,2) NOT NULL DEFAULT 0;
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='pagamento_status') THEN
+  ALTER TABLE agendamentos ADD pagamento_status ENUM('Não se aplica','Pendente','Solicitado','Confirmado') NOT NULL DEFAULT 'Não se aplica';
+ END IF;
  IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='valor_original') THEN
   ALTER TABLE agendamentos ADD valor_original DECIMAL(10,2) NULL;
  END IF;
@@ -69,3 +75,4 @@ CREATE TABLE IF NOT EXISTS usos_cupons (
  FOREIGN KEY(agendamento_id) REFERENCES agendamentos(id)
 ) ENGINE=InnoDB;
 INSERT INTO cupons(codigo,porcentagem) SELECT 'REDSTAR10',10 WHERE NOT EXISTS(SELECT 1 FROM cupons WHERE codigo='REDSTAR10');
+

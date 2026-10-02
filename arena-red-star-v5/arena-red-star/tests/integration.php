@@ -1,5 +1,6 @@
 <?php
 // Execute somente em um banco descartável com nome terminado em _test.
+if(PHP_SAPI!=='cli') { http_response_code(403); exit; }
 if(!str_ends_with(getenv('ARENA_DB_NAME')?:'', '_test')) exit("Defina ARENA_DB_NAME para um banco descartável terminado em _test.\n");
 require __DIR__.'/../app.php';require __DIR__.'/../admin_actions.php';
 $n=0;
@@ -31,4 +32,13 @@ check(count(financial(['de'=>$next,'ate'=>$next,'forma'=>'Dinheiro','status'=>'C
 check(period($next,'17:00','18:00')===60,'Duração de uma hora');denied(fn()=>period($next,'17:00','17:30'),'Meia hora negada');denied(fn()=>period('2026-02-30','17:00','18:00'),'Data impossível negada');
 check(query('SELECT id FROM agendamentos WHERE id=?',[$id])->fetch()!==false,'Histórico cancelado preservado');
 query("INSERT INTO cupons(codigo,porcentagem) VALUES('TESTEGRATIS',100)");$input['cupom']='TESTEGRATIS';$input['pagamento']='Pix';$input['inicio']='17:00';$input['fim']='18:00';$free=createBooking($unused,$input);check((float)receipt($unused['id'],$free)['valor']===0.0,'Desconto integral zera valor');check(receipt($unused['id'],$free)['pagamento_status']==='Confirmado','Reserva gratuita não exige Pix');adminAction(['acao'=>'confirmar','id'=>$free]);check(receipt($unused['id'],$free)['status']==='Confirmado','Admin confirma reserva gratuita');
+$manualDate=date('Y-m-d',strtotime('+13 days'));
+adminAction(['acao'=>'adicionar','nome_cliente'=>'Pix manual teste','telefone'=>'11999999999','data'=>$manualDate,'horario_inicio'=>'10:00','horario_fim'=>'11:00','forma_pagamento'=>'Pix']);
+$manual=query('SELECT * FROM agendamentos WHERE nome_cliente=? AND data=?',['Pix manual teste',$manualDate])->fetch();
+check($manual['usuario_id']===null && $manual['pagamento_status']==='Pendente','Pix manual inicia pendente sem conta de cliente');
+adminAction(['acao'=>'confirmar_pix','id'=>$manual['id']]);
+check(query('SELECT pagamento_status FROM agendamentos WHERE id=?',[$manual['id']])->fetchColumn()==='Confirmado','Admin confirma recebimento do Pix manual');
+$input['cupom']='';$input['inicio']='18:00';$input['fim']='19:00';$normal=createBooking($unused,$input);
+denied(fn()=>adminAction(['acao'=>'confirmar_pix','id'=>$normal]),'Pix de conta continua exigindo solicitação do cliente');
 echo "\n$n verificações passaram.\n";
+

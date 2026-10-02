@@ -14,7 +14,7 @@ function adminAction(array $in): void {
   if(in_array($action,['confirmar','confirmar_pix'],true)) {
    if($r['status']!=='Pendente') throw new DomainException('Somente reservas pendentes podem ser confirmadas.');
    if($r['forma_pagamento']==='Pix'&&(float)$r['valor']>0&&$action!=='confirmar_pix')throw new DomainException('Verifique e confirme o Pix.');
-   if($action==='confirmar_pix' && ($r['forma_pagamento']!=='Pix'||$r['pagamento_status']!=='Solicitado')) throw new DomainException('O cliente ainda não solicitou a confirmação do Pix.');
+   if($action==='confirmar_pix' && ($r['forma_pagamento']!=='Pix'||($r['pagamento_status']!=='Solicitado' && $r['usuario_id']!==null))) throw new DomainException('O cliente ainda não solicitou a confirmação do Pix.');
    available($r['data'],$r['horario_inicio'],$r['horario_fim'],$id);
    query("UPDATE agendamentos SET status='Confirmado',pagamento_status=? WHERE id=?",[$action==='confirmar_pix'?'Confirmado':$r['pagamento_status'],$id]);
   }elseif($action==='receber') {
@@ -29,3 +29,4 @@ function adminAction(array $in): void {
   }else throw new DomainException('Ação inválida.');
  });
 }
+

@@ -18,13 +18,24 @@ quando o cupom muda e tratamento de erros recebidos do servidor.
 
 Validação realizada em 02/10/2026:
 - Sintaxe de todos os arquivos PHP e JavaScript.
-- 40 verificações de integração em PHP 8.3 e MariaDB 10.11.
+- 43 verificações de integração em PHP 8.3 e MariaDB 10.11.
 - Reaplicação da migração preservando reservas e usos dos cupons.
 - Duas reservas simultâneas: uma criada, um único uso registrado.
 - Requisições HTTP de cadastro/login/reserva/comprovante/perfil/admin.
 - Criação/edição de bloqueio, criação/desativação de cupom e financeiro.
 - Validação de XSS, CSRF e acesso a páginas de outro usuário/admin.
 - Teste automatizado do formulário Pix.
-- Layout visual em navegador não validado: o ambiente de execução bloqueou
-  a inicialização do navegador de teste. CSS inclui ajustes responsivos
-  e de impressão, mas exige revisão visual no ambiente XAMPP.
+- Verificação no navegador a 390px e 1440px: navegação móvel, formulários,
+  cadastro/login/reserva, perfil e senha atual, impressão e Pix de R$216.
+- Confirmação de Pix manual pelo admin, mantendo a solicitação para contas de clientes.
+
+
+Teste no navegador (instalação e banco dedicados aos testes):
+Instale playwright-core e indique seu Chromium em ARENA_CHROME_BIN. Depois de executar
+a suíte de integração, com o mesmo servidor PHP/Apache e ARENA_DB_* do banco _test,
+crie um administrador de teste com e-mail terminado em -admin@example.com e senha
+local de teste usada no script (teste12345). Execute node tests/layout.cjs.
+ARENA_TEST_URL define a URL do servidor; ARENA_PHP_BIN indica o PHP da instalação.
+ARENA_SCREENSHOT_DIR é opcional. Não publique os testes: .htaccess restringe a pasta.
+A imagem original da logo continua no repositório; conectores que não baixam binários
+podem mostrar imagem ausente no ambiente local de QA.

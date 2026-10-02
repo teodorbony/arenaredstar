@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "(?i)(\.(sql|txt|log|py|example)$|^(email_config|db_config)\.php$)">
+    Require all denied
+</FilesMatch>

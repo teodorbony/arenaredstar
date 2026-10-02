@@ -80,3 +80,13 @@ BANCO E CONFIGURAÇÃO
   Pendências canceladas ficam fora do total pendente. Estornos reais são
   controlados fora do sistema, pois não há integração bancária automática.
 - Não há integração automática de confirmação Pix; a verificação é do admin.
+
+
+VERIFICAÇÃO COMPLEMENTAR
+- 43 verificações de integração e testes reais no navegador a 390px/1440px.
+- Menu acessível por rolagem horizontal em celular e tablet.
+- Pix de reserva manual sem conta de cliente pode ser confirmado pelo administrador;
+  reservas de contas de clientes continuam exigindo a solicitação de confirmação.
+- A migração também cria valor/pagamento_status somente se faltarem em bancos antigos.
+- .htaccess bloqueia listagem de pastas, arquivos SQL/documentação e a pasta tests no
+  Apache. Se usar outro servidor, configure proteções equivalentes para esses caminhos.
