@@ -1,37 +1,25 @@
 <?php
-require_once 'app.php'; auth(true); require_once 'admin_actions.php';
-$mensagem='';$tipoMensagem='success';
-if($_SERVER['REQUEST_METHOD']==='POST') {try{csrf();adminAction($_POST);notice('Agenda atualizada.');}catch(Throwable $ex){handleError($ex);}redirect('admin.php#agenda');}
-$agendamentos=$pdo->query('SELECT id,usuario_id,nome_cliente,telefone,data,horario_inicio,horario_fim,forma_pagamento,valor,pagamento_status,campo,status FROM agendamentos ORDER BY data ASC, horario_inicio ASC')->fetchAll();
-$total=count($agendamentos);$confirmados=count(array_filter($agendamentos,fn($a)=>$a['status']==='Confirmado'));$pendentes=count(array_filter($agendamentos,fn($a)=>$a['status']==='Pendente'));$cancelados=count(array_filter($agendamentos,fn($a)=>$a['status']==='Cancelado'));
+require_once 'app.php';
+auth(true);
+pageStart('Painel Administrativo');
 ?>
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin | Red Star Point Ball</title><link rel="stylesheet" href="style.css"></head>
-<body class="dashboard-page admin-page">
-<header class="topbar"><a class="brand-mini" href="admin.php"><img src="assets/logo-red-star.png" alt="Red Star"><span>Red Star<br><small>Point Ball</small></span></a><nav class="nav-tabs"><a href="#painel" class="active">▣ Painel</a><a href="#agenda">▣ Agendamentos</a><a href="calendario.php">▣ Calendário</a><a href="bloqueios.php">Bloqueios</a><a href="cupons.php">Cupons</a><a href="financeiro.php">Financeiro</a><a href="perfil.php">Perfil</a><a href="index.php">Início</a></nav><div class="user-actions"><span>👤 Olá, Admin</span><a href="logout.php">↪ Sair</a></div></header>
-<main class="section-wrap admin-main" id="painel">
-    <div class="admin-title"><div><div class="panel-kicker">GESTÃO RED STAR</div><h1>Painel Administrativo</h1><p class="muted">Gerencie os agendamentos do único campo da arena.</p></div></div>
-    <?php showNotice(); ?><?php if($mensagem):?><div class="alert <?= $tipoMensagem==='danger'?'danger':'success' ?>"><?=htmlspecialchars($mensagem,ENT_QUOTES,'UTF-8')?></div><?php endif;?>
-    <?php require 'dashboard.php'; ?>
+<div class="admin-title">
+    <div>
+        <div class="panel-kicker">GESTÃO RED STAR</div>
+        <h1>Painel Administrativo</h1>
+        <p class="muted">Acompanhe os principais indicadores da arena.</p>
+    </div>
+    <a class="primary-btn" href="agendamentos.php">Gerenciar agendamentos</a>
+</div>
 
-    <section class="admin-form-card">
-        <div class="section-heading"><div><div class="panel-kicker">NOVO REGISTRO</div><h2>Adicionar agendamento manual</h2></div></div>
-        <form method="post" class="admin-form-grid">
-            <input type="hidden" name="csrf_token" value="<?=htmlspecialchars($_SESSION['csrf_token'],ENT_QUOTES,'UTF-8')?>"><input type="hidden" name="acao" value="adicionar">
-            <label>Cliente<input type="text" name="nome_cliente" required placeholder="Nome do cliente"></label><label>Telefone<input type="text" name="telefone" id="telefone" required placeholder="(00) 00000-0000"></label><label>Data<input type="date" name="data" id="data" required></label><label>Início<input type="time" name="horario_inicio" required></label><label>Fim<input type="time" name="horario_fim" required></label><label>Campo<div class="fixed-field compact">⚽ Campo 1 (Único)</div></label><label>Pagamento<select name="forma_pagamento"><option>Dinheiro</option><option>Cartão</option><option>Pix</option></select></label><label>Status<select name="status"><option>Pendente</option><option>Confirmado</option><option>Cancelado</option></select></label><button class="primary-btn" type="submit">Adicionar reserva +</button>
-        </form>
-    </section>
+<?php require 'dashboard.php'; ?>
 
-    <section class="table-section" id="agenda"><div class="section-heading"><div><div class="panel-kicker">AGENDA</div><h2>Todos os agendamentos</h2></div><span class="count-badge"><?=$total?> registro(s)</span></div><div class="table-card"><div class="table-scroll"><table><thead><tr><th>Cliente</th><th>Telefone</th><th>Data</th><th>Início</th><th>Fim</th><th>Valor</th><th>Pagamento</th><th>Campo</th><th>Status</th><th>Ações</th></tr></thead><tbody>
-    <?php if(!$agendamentos):?><tr><td colspan="10" class="empty">Nenhum agendamento cadastrado.</td></tr><?php else:foreach($agendamentos as $a):$classe=in_array($a['status'],['Confirmado','Concluído'],true)?'confirmed':($a['status']==='Cancelado'?'cancelled':'pending');?><tr><td><strong><?=htmlspecialchars($a['nome_cliente'],ENT_QUOTES,'UTF-8')?></strong></td><td><?=htmlspecialchars($a['telefone'],ENT_QUOTES,'UTF-8')?></td><td><?=date('d/m/Y',strtotime($a['data']))?></td><td><?=date('H:i',strtotime($a['horario_inicio']))?></td><td><?=date('H:i',strtotime($a['horario_fim']))?></td><td>R$ <?=number_format((float)$a['valor'],2,',','.')?></td><td><?=htmlspecialchars($a['forma_pagamento'],ENT_QUOTES,'UTF-8')?><?= $a['forma_pagamento']==='Pix'?' · '.htmlspecialchars($a['pagamento_status'],ENT_QUOTES,'UTF-8'):''?></td><td>Campo 1</td><td><span class="status <?=$classe?>"><?=htmlspecialchars($a['status'],ENT_QUOTES,'UTF-8')?></span></td><td><div class="action-set">
-    <?php if($a['status']==='Pendente' && ($a['forma_pagamento']!=='Pix' || (float)$a['valor']==0)):?><form method="post"><input type="hidden" name="csrf_token" value="<?=htmlspecialchars($_SESSION['csrf_token'],ENT_QUOTES,'UTF-8')?>"><input type="hidden" name="acao" value="confirmar"><input type="hidden" name="id" value="<?=(int)$a['id']?>"><button class="success-outline small">Confirmar</button></form><?php endif;?>
-    <?php if($a['status']==='Pendente' && $a['forma_pagamento']==='Pix' && ($a['pagamento_status']==='Solicitado' || ($a['usuario_id']===null && $a['pagamento_status']==='Pendente'))):?><form method="post"><input type="hidden" name="csrf_token" value="<?=htmlspecialchars($_SESSION['csrf_token'],ENT_QUOTES,'UTF-8')?>"><input type="hidden" name="acao" value="confirmar_pix"><input type="hidden" name="id" value="<?=(int)$a['id']?>"><button class="success-outline small">Confirmar Pix</button></form><?php endif;?>
-    <?php if(in_array($a['status'],['Pendente','Confirmado'],true)):?><form method="post"><input type="hidden" name="csrf_token" value="<?=htmlspecialchars($_SESSION['csrf_token'],ENT_QUOTES,'UTF-8')?>"><input type="hidden" name="acao" value="cancelar"><input type="hidden" name="id" value="<?=(int)$a['id']?>"><button class="warning-outline small">Cancelar</button></form><?php endif;?>
-    <?php if($a['status']!=='Cancelado' && $a['forma_pagamento']!=='Pix' && $a['pagamento_status']!=='Confirmado'):?><form method="post"><?php csrfField();?><input type="hidden" name="id" value="<?=(int)$a['id']?>"><button class="success-outline small" name="acao" value="receber">Confirmar recebimento</button></form><?php endif;?>
-    <?php if($a['status']==='Confirmado' && strtotime($a['data'].' '.$a['horario_fim'])<=time()):?><form method="post"><?php csrfField();?><input type="hidden" name="id" value="<?=(int)$a['id']?>"><button class="outline-btn small" name="acao" value="concluir">Concluir reserva</button></form><?php endif;?>
-    </div></td></tr><?php endforeach;endif;?></tbody></table></div></div></section>
-</main>
-<footer class="site-footer">© <?=date('Y')?> Red Star Point Ball · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer>
-<script>const data=document.getElementById('data');const hoje=new Date();data.min=new Date(hoje.getTime()-hoje.getTimezoneOffset()*60000).toISOString().split('T')[0];const tel=document.getElementById('telefone');tel.addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,11);if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');else if(v.length>6)v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');this.value=v;});</script>
-</body></html>
-
-
+<section class="admin-form-card admin-agenda-callout">
+    <div>
+        <div class="panel-kicker">AGENDA</div>
+        <h2>Agendamentos em uma página exclusiva</h2>
+        <p class="muted">Cadastre reservas manuais, acompanhe pagamentos e altere o status dos horários.</p>
+    </div>
+    <a class="outline-btn" href="agendamentos.php">Abrir agendamentos →</a>
+</section>
+<?php pageEnd(); ?>
