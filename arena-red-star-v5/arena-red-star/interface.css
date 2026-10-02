@@ -1,0 +1,36 @@
+.page-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}
+.modal-backdrop[hidden]{display:none!important}
+.modal-card{position:relative;width:min(680px,100%);max-height:90vh;overflow:auto;padding:30px;background:linear-gradient(145deg,#121619,#080a0b);border:1px solid #3b444b;border-top:2px solid var(--red);border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,.7)}
+.modal-wide{width:min(1050px,100%)}
+.modal-card h2{margin:.25em 40px .2em 0;font-size:clamp(27px,4vw,38px)}
+.modal-close{position:absolute;top:14px;right:16px;width:42px;height:42px;border:1px solid #444d53;border-radius:50%;background:#161b1e;color:#fff;font-size:27px;line-height:1}
+.modal-close:hover{border-color:var(--red);color:#ff6570}
+.modal-card .admin-form-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:24px}
+.full-span{grid-column:1/-1}
+.modal-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:10px}
+.modal-actions .outline-btn{display:inline-flex;align-items:center}
+body.modal-open{overflow:hidden}
+.coupon-modal-trigger{padding:11px 14px;border:1px dashed rgba(239,23,40,.6);border-radius:10px;background:rgba(239,23,40,.07);color:#ff7b85;font-weight:800;text-align:left}
+.coupon-modal-trigger:hover{background:rgba(239,23,40,.14);border-style:solid}
+.coupon-list{display:grid;gap:12px;margin-top:22px}
+.coupon-card{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px;border:1px solid rgba(18,185,90,.45);border-radius:13px;background:rgba(18,185,90,.07)}
+.coupon-card h3{margin:4px 0;font-size:25px;letter-spacing:1px}
+.coupon-card span,.coupon-card small{display:block;color:var(--muted);font-size:12px}
+.coupon-card.unavailable{opacity:.62;border-color:#3c4449;background:#111518}
+.empty-state{padding:25px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}
+.location-card{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(420px,1.3fr);gap:0;margin-top:28px;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow)}
+.location-copy{padding:32px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.location-copy h3{font-size:clamp(25px,3vw,36px);margin:8px 0}
+.location-copy p{margin:5px 0}.location-copy .primary-btn{margin-top:18px}
+.map-frame{min-height:360px;background:#171b1d}.map-frame iframe{display:block;width:100%;height:100%;min-height:360px;border:0}
+.filter-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:28px 0 5px}
+.filter-tabs a{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:#101416;color:#c7cdd1;font-size:13px;font-weight:800}
+.filter-tabs a span{min-width:22px;padding:2px 6px;border-radius:999px;background:#262d31;text-align:center;font-size:11px}
+.filter-tabs a.active,.filter-tabs a:hover{border-color:rgba(239,23,40,.65);background:rgba(239,23,40,.1);color:#ff6570}
+.cell-note{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:400}
+.vertical-actions{min-width:155px;flex-direction:column;align-items:stretch}
+.vertical-actions .outline-btn,.vertical-actions .success-outline,.vertical-actions .danger-outline{display:block;width:100%;text-align:center}
+.user-bookings-section{padding-top:24px}
+@media(max-width:900px){.modal-card .admin-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.location-card{grid-template-columns:1fr}.map-frame,.map-frame iframe{min-height:320px}}
+@media(max-width:640px){.page-actions,.modal-actions{width:100%;flex-direction:column;align-items:stretch}.page-actions>*{width:100%;text-align:center}.modal-backdrop{padding:10px}.modal-card{padding:24px 18px;max-height:94vh}.modal-card .admin-form-grid{grid-template-columns:1fr}.coupon-card{align-items:stretch;flex-direction:column}.location-copy{padding:24px}.map-frame,.map-frame iframe{min-height:280px}.filter-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:7px}.filter-tabs a{flex:0 0 auto}}

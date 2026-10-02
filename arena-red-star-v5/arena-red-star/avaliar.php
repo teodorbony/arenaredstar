@@ -1,6 +1,6 @@
 <?php
 require_once 'app.php';$u=auth();$id=(int)($_POST['id']??$_GET['id']??0);
-if($_SERVER['REQUEST_METHOD']==='POST') { try { csrf(); addReview((int)$u['id'],$id,(int)filter_var($_POST['nota']??0,FILTER_VALIDATE_INT),$_POST['comentario']??'');notice('Obrigado! Sua avaliação foi publicada.'); }catch(Throwable $ex){handleError($ex);}redirect('usuario.php#meus'); }
+if($_SERVER['REQUEST_METHOD']==='POST') { try { csrf(); addReview((int)$u['id'],$id,(int)filter_var($_POST['nota']??0,FILTER_VALIDATE_INT),$_POST['comentario']??'');notice('Obrigado! Sua avaliação foi publicada.'); }catch(Throwable $ex){handleError($ex);}redirect('meus-agendamentos.php'); }
 $r=query("SELECT id FROM agendamentos WHERE id=? AND usuario_id=? AND status='Concluído' AND TIMESTAMP(data,horario_fim)<=?",[$id,$u['id'],date('Y-m-d H:i:s')])->fetch();
 if(!$r || query('SELECT id FROM avaliacoes WHERE agendamento_id=?',[$id])->fetch()){http_response_code(403);exit('Esta reserva não pode ser avaliada.');}
 pageStart('Avaliar a Arena'); ?>

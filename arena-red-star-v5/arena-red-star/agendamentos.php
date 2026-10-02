@@ -32,7 +32,10 @@ pageStart('Agendamentos');
         <h1>Agendamentos</h1>
         <p class="muted">Cadastre, confirme e acompanhe todas as reservas da arena.</p>
     </div>
-    <a class="outline-btn" href="admin.php">← Voltar ao painel</a>
+    <div class="page-actions">
+        <button class="primary-btn" type="button" data-modal-open="admin-booking-modal">Novo agendamento +</button>
+        <a class="outline-btn" href="admin.php">← Voltar ao painel</a>
+    </div>
 </div>
 
 <section class="stats booking-stats">
@@ -42,27 +45,27 @@ pageStart('Agendamentos');
     <article class="red"><div><small>Cancelados</small><strong><?= $cancelados ?></strong></div></article>
 </section>
 
-<section class="admin-form-card">
-    <div class="section-heading">
-        <div>
-            <div class="panel-kicker">NOVO REGISTRO</div>
-            <h2>Adicionar agendamento manual</h2>
-        </div>
-    </div>
-    <form method="post" class="admin-form-grid">
-        <?php csrfField(); ?>
-        <input type="hidden" name="acao" value="adicionar">
-        <label>Cliente<input type="text" name="nome_cliente" required maxlength="120" placeholder="Nome do cliente"></label>
-        <label>Telefone<input type="text" name="telefone" id="telefone" required maxlength="25" placeholder="(00) 00000-0000"></label>
-        <label>Data<input type="date" name="data" id="data" required></label>
-        <label>Início<input type="time" name="horario_inicio" required></label>
-        <label>Fim<input type="time" name="horario_fim" required></label>
-        <label>Campo<div class="fixed-field compact">⚽ Campo 1 (Único)</div></label>
-        <label>Pagamento<select name="forma_pagamento"><option>Dinheiro</option><option>Cartão</option><option>Pix</option></select></label>
-        <label>Status<select name="status"><option>Pendente</option><option>Confirmado</option><option>Cancelado</option></select></label>
-        <button class="primary-btn" type="submit">Adicionar reserva +</button>
-    </form>
-</section>
+<div class="modal-backdrop" id="admin-booking-modal" hidden>
+    <section class="modal-card modal-wide" role="dialog" aria-modal="true" aria-labelledby="admin-booking-title">
+        <button class="modal-close" type="button" data-modal-close aria-label="Fechar modal">×</button>
+        <div class="panel-kicker">NOVO REGISTRO</div>
+        <h2 id="admin-booking-title">Adicionar agendamento manual</h2>
+        <p class="muted">Preencha os dados do cliente e escolha um horário disponível.</p>
+        <form method="post" class="admin-form-grid">
+            <?php csrfField(); ?>
+            <input type="hidden" name="acao" value="adicionar">
+            <label>Cliente<input type="text" name="nome_cliente" required maxlength="120" placeholder="Nome do cliente"></label>
+            <label>Telefone<input type="text" name="telefone" id="telefone" required maxlength="25" placeholder="(00) 00000-0000"></label>
+            <label>Data<input type="date" name="data" id="data" required></label>
+            <label>Início<input type="time" name="horario_inicio" required></label>
+            <label>Fim<input type="time" name="horario_fim" required></label>
+            <label>Campo<div class="fixed-field compact">⚽ Campo 1 (Único)</div></label>
+            <label>Pagamento<select name="forma_pagamento"><option>Dinheiro</option><option>Cartão</option><option>Pix</option></select></label>
+            <label>Status<select name="status"><option>Pendente</option><option>Confirmado</option><option>Cancelado</option></select></label>
+            <div class="modal-actions full-span"><button class="outline-btn" type="button" data-modal-close>Cancelar</button><button class="primary-btn" type="submit">Adicionar reserva +</button></div>
+        </form>
+    </section>
+</div>
 
 <section class="table-section">
     <div class="section-heading">
@@ -127,4 +130,5 @@ tel.addEventListener('input', function () {
     this.value = v;
 });
 </script>
+<script src="modal.js"></script>
 <?php pageEnd(); ?>
