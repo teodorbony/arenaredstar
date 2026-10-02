@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once 'db.php';
+require_once 'app.php';
 
 if (isset($_SESSION['usuario_id'])) {
     header('Location: ' . (($_SESSION['usuario_tipo'] ?? 'cliente') === 'admin' ? 'admin.php' : 'usuario.php'));
@@ -11,6 +10,7 @@ $erro = '';
 $nome = $email = $telefone = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try { csrf(); } catch (DomainException $ex) { http_response_code(403); exit(e($ex->getMessage())); }
     $nome = trim($_POST['nome'] ?? '');
     $telefone = trim($_POST['telefone'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($nome === '' || $telefone === '' || $email === '' || $senha === '' || $confirmar === '') {
         $erro = 'Preencha todos os campos.';
-    } elseif (mb_strlen($nome) < 3) {
+    } elseif (mb_strlen($nome) < 3 || mb_strlen($nome)>120 || mb_strlen($telefone)>25 || strlen($email)>150) {
         $erro = 'Digite seu nome completo.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erro = 'Digite um e-mail válido.';
@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check->fetch()) {
             $erro = 'Este e-mail já está cadastrado.';
         } else {
+            try { atomic(function() use ($pdo,$nome,$telefone,$email,$senha) {
             $stmt = $pdo->prepare('INSERT INTO usuarios (nome, telefone, email, senha, tipo) VALUES (:nome, :telefone, :email, :senha, :tipo)');
             $stmt->execute([
                 'nome' => $nome,
@@ -42,7 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'senha' => password_hash($senha, PASSWORD_DEFAULT),
                 'tipo' => 'cliente'
             ]);
-            $_SESSION['sucesso_login'] = 'Conta criada com sucesso. Agora faça seu login.';
+            $uid=(int)$pdo->lastInsertId();
+            query("INSERT INTO usuario_cupons(usuario_id,cupom_id) SELECT ?,id FROM cupons WHERE codigo='REDSTAR10'",[$uid]);
+            }); } catch (Throwable $ex) { handleError($ex); redirect('cadastro.php'); }
+            $_SESSION['sucesso_login'] = '🎉 Bem-vindo à Arena Red Star! Você ganhou o cupom REDSTAR10 com 10% de desconto na sua primeira reserva. Faça seu login.';
             header('Location: login.php');
             exit;
         }
@@ -73,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php if ($erro): ?><div class="alert danger"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
 
-        <form method="post" class="form-stack" id="cadastroForm">
+        <?php showNotice(); ?><form method="post" class="form-stack" id="cadastroForm"><?php csrfField(); ?>
             <label>Nome completo<div class="input-box"><span>♙</span><input type="text" name="nome" value="<?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu nome completo" required maxlength="120"></div></label>
             <label>Telefone<div class="input-box"><span>☎</span><input type="text" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone, ENT_QUOTES, 'UTF-8') ?>" placeholder="(00) 00000-0000" required maxlength="20"></div></label>
             <label>E-mail<div class="input-box"><span>✉</span><input type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div></label>
@@ -91,3 +95,4 @@ const tel=document.getElementById('telefone');tel.addEventListener('input',funct
 </script>
 </body>
 </html>
+

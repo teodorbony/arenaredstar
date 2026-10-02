@@ -1,0 +1,7 @@
+Adicione aqui as fotos reais da Arena:
+- campo.jpg
+- gramado.jpg
+- iluminacao.jpg
+- estrutura.jpg
+A galeria é configurável no arquivo arena_config.php. Você pode adicionar outras
+áreas, como arquibancada, se elas existirem. Não há fotos fictícias no projeto.

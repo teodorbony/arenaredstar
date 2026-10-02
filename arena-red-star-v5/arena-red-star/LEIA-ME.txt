@@ -1,4 +1,4 @@
-ARENA RED STAR POINT BALL — V5
+ARENA RED STAR POINT BALL — MELHORIAS 2026-10-02
 
 Projeto PHP puro para TCC.
 
@@ -29,11 +29,54 @@ RECURSOS MANTIDOS DA V4
 - Senhas com password_hash/password_verify.
 - Admin padrão: admin@arenaredstar.com / admin123
 
-INSTALAÇÃO NO XAMPP
-1. Copie a pasta arena-red-star para C:\xampp\htdocs\
-2. Inicie Apache e MySQL.
-3. Acesse http://localhost/phpmyadmin
-4. Importe banco.sql (ele recria as tabelas).
-5. Acesse http://localhost/arena-red-star/
+ATUALIZAR UMA INSTALAÇÃO EXISTENTE (SEM APAGAR DADOS)
+1. No VS Code, use git pull na sua cópia do repositório.
+2. No phpMyAdmin, selecione arena_red_star e importe migracao_melhorias.sql.
+   Esse arquivo apenas amplia o status, acrescenta as três colunas de desconto
+   e cria avaliações, bloqueios e as tabelas necessárias aos cupons.
+   Não importe SQL de versões antigas que usam DROP TABLE.
+3. Acesse a página inicial pelo index.php.
+4. Preencha os horários reais de funcionamento no arena_config.php.
+5. Coloque as fotos reais em assets/galeria/ seguindo o LEIA-ME dessa pasta.
 
-ATENÇÃO: ao importar banco.sql, os dados anteriores das tabelas serão apagados porque o arquivo usa DROP TABLE para facilitar a instalação do TCC.
+NOVA INSTALAÇÃO NO XAMPP
+1. Copie a pasta arena-red-star para C:\xampp\htdocs\.
+2. Inicie Apache e MySQL, e abra http://localhost/phpmyadmin.
+3. Importe banco.sql. O arquivo atualizado não apaga tabelas nem insere reservas
+   fictícias. Cria o administrador inicial apenas se o e-mail não existir.
+4. Acesse http://localhost/arena-red-star/ e altere a senha inicial do admin.
+5. Configure e-mail conforme as instruções acima; credenciais continuam locais.
+
+NOVAS FUNCIONALIDADES
+- Página inicial pública, avaliações reais, contato e galeria preparada.
+- Meu Perfil com verificação da senha atual para trocar a senha.
+- Comprovantes das próprias reservas com impressão pelo navegador.
+- Avaliações únicas por reserva, liberadas depois da conclusão pelo admin.
+- Dashboard mensal e gráficos dos últimos 12 meses com dados do banco.
+- Bloqueios de horários: criar, editar e excluir, integrados à agenda/calendário.
+- Financeiro com filtros por data do jogo, status e forma de pagamento.
+- Cupons administráveis: percentual, validade, limite global e ativação.
+- Novas contas recebem REDSTAR10, 10% na primeira reserva, uma vez por conta.
+  Contas existentes não recebem retroativamente. Outros cupons também são
+  limitados a uma utilização por conta. Código já usado mantém seu histórico.
+- Descontos/valores são validados no servidor. Pix usa o valor final.
+- Aplicar um cupom apenas calcula: o uso é gravado com a criação válida da reserva.
+  Falhas revertem a transação. Cancelar uma reserva não devolve o benefício.
+- Reservas concorrentes e uso de cupons são protegidos por transação e trava MySQL.
+- O admin confirma Pix após a solicitação do cliente; dinheiro/cartão têm botão
+  próprio para confirmar recebimento. Confirmação da reserva não significa pagamento.
+- Concluir reserva só é permitido após o horário final e com status Confirmado.
+- Cancelamentos mantêm o registro financeiro. Reservas não são excluídas.
+- Calendário do cliente mostra horários ocupados sem divulgar nomes de outros clientes.
+
+BANCO E CONFIGURAÇÃO
+- PHP 8.x com PDO MySQL e mbstring; MySQL/MariaDB com InnoDB.
+- O servidor deve permitir GET_LOCK/RELEASE_LOCK para a proteção da agenda.
+- db.php usa os padrões locais do XAMPP. Em produção, configure ARENA_DB_HOST,
+  ARENA_DB_PORT, ARENA_DB_NAME, ARENA_DB_USER e ARENA_DB_PASSWORD no servidor.
+- Novos pagamentos iniciam Pendente. Os antigos registros “Não se aplica” não
+  são presumidos como pagos: confirme o recebimento real pelo administrador.
+- O total recebido mantém pagamentos confirmados mesmo em reservas canceladas.
+  Pendências canceladas ficam fora do total pendente. Estornos reais são
+  controlados fora do sistema, pois não há integração bancária automática.
+- Não há integração automática de confirmação Pix; a verificação é do admin.

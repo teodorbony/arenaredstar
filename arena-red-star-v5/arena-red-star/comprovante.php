@@ -1,0 +1,7 @@
+<?php
+require_once 'app.php';$u=auth();
+try { $a=receipt((int)$u['id'],(int)($_GET['id']??0)); } catch(DomainException $ex){http_response_code(404);exit(e($ex->getMessage()));}
+pageStart('Comprovante da reserva'); ?>
+<article class="admin-form-card receipt"><div class="receipt-heading"><img src="assets/logo-red-star.png" alt="Arena Red Star"><div><div class="panel-kicker">ARENA RED STAR</div><h1>Comprovante da reserva #<?=(int)$a['id']?></h1><p class="muted">A confirmação de pagamento depende da verificação do administrador.</p></div></div><dl class="receipt-grid">
+<?php $fields=['Cliente'=>$a['nome_cliente'],'Data'=>date('d/m/Y',strtotime($a['data'])),'Horário inicial'=>substr($a['horario_inicio'],0,5),'Horário final'=>substr($a['horario_fim'],0,5),'Duração'=>((strtotime($a['horario_fim'])-strtotime($a['horario_inicio']))/3600).' hora(s)','Valor original'=>money($a['valor_original']??$a['valor']),'Desconto'=>money($a['desconto']).($a['cupom_codigo']?' · '.$a['cupom_codigo']:''),'Valor final'=>money($a['valor']),'Forma de pagamento'=>$a['forma_pagamento'],'Status do pagamento'=>$a['status']==='Cancelado'?'Reserva cancelada · '.$a['pagamento_status']:$a['pagamento_status'],'Status da reserva'=>$a['status']];foreach($fields as $label=>$value):?><div><dt><?=e($label)?></dt><dd><?=e($value)?></dd></div><?php endforeach;?></dl><div class="print-actions"><button class="primary-btn" onclick="window.print()">Imprimir comprovante</button><a class="outline-btn" href="usuario.php#meus">Voltar às reservas</a></div></article>
+<?php pageEnd();

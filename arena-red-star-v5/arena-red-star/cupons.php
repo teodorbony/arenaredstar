@@ -1,0 +1,20 @@
+<?php
+require_once 'app.php';auth(true);
+if($_SERVER['REQUEST_METHOD']==='POST'){try{csrf();atomic(function(){
+ $id=(int)($_POST['id']??0);
+ if(($_POST['acao']??'')==='alternar'){query('UPDATE cupons SET ativo=1-ativo WHERE id=?',[$id]);return;}
+ $code=strtoupper(trim($_POST['codigo']??''));$percent=filter_var($_POST['porcentagem']??'',FILTER_VALIDATE_FLOAT);$expiry=$_POST['validade']??'';$max=$_POST['max_usos']??'';
+ if(!preg_match('/^[A-Z0-9_-]{3,30}$/',$code)||$percent===false||$percent<=0||$percent>100||($expiry!==''&&!validDate($expiry))||($max!==''&&(!ctype_digit($max)||(int)$max<1||(int)$max>2147483647))) throw new DomainException('Informe código, percentual, validade e limite válidos.');
+ $old=$id?query('SELECT * FROM cupons WHERE id=?',[$id])->fetch():null;
+ if($id&&!$old) throw new DomainException('Cupom não encontrado.');
+ if(($old['codigo']??'')==='REDSTAR10' && ($code!=='REDSTAR10'||$percent!=10)) throw new DomainException('O benefício REDSTAR10 deve manter o código e 10% de desconto.');
+ if($code==='REDSTAR10' && $percent!=10) throw new DomainException('REDSTAR10 oferece 10% de desconto.');
+ if(query('SELECT id FROM cupons WHERE codigo=? AND id<>?',[$code,$id])->fetch()) throw new DomainException('Código já cadastrado.');
+ if($old && $code!==$old['codigo'] && (int)query('SELECT COUNT(*) FROM usos_cupons WHERE cupom_id=?',[$id])->fetchColumn()>0) throw new DomainException('Cupons já utilizados devem manter seu código.');
+ $values=[$code,$percent,$expiry?:null,$max===''?null:(int)$max,isset($_POST['ativo'])?1:0];
+ if($id){$values[]=$id;query('UPDATE cupons SET codigo=?,porcentagem=?,validade=?,max_usos=?,ativo=? WHERE id=?',$values);}else query('INSERT INTO cupons(codigo,porcentagem,validade,max_usos,ativo) VALUES(?,?,?,?,?)',$values);
+});notice('Cupom atualizado.');}catch(Throwable $ex){handleError($ex);}redirect('cupons.php');}
+$edit=query('SELECT * FROM cupons WHERE id=?',[(int)($_GET['editar']??0)])->fetch()?:[];$rows=query('SELECT c.*,(SELECT COUNT(*) FROM usos_cupons u WHERE u.cupom_id=c.id) usos FROM cupons c ORDER BY c.id DESC')->fetchAll();pageStart('Cupons'); ?>
+<h1>Cupons de desconto</h1><p class="muted">REDSTAR10 é concedido às contas criadas após a atualização e vale na primeira reserva. Cada cupom pode ser usado uma vez por conta.</p><section class="admin-form-card"><h2><?=$edit?'Editar cupom':'Criar cupom'?></h2><form method="post" class="admin-form-grid"><?php csrfField();?><input type="hidden" name="id" value="<?=(int)($edit['id']??0)?>"><label>Código<input name="codigo" maxlength="30" value="<?=e($edit['codigo']??'')?>" required></label><label>Desconto (%)<input type="number" name="porcentagem" min="0.01" max="100" step="0.01" value="<?=e($edit['porcentagem']??'')?>" required></label><label>Validade (opcional)<input type="date" name="validade" value="<?=e($edit['validade']??'')?>"></label><label>Máximo de usos (opcional)<input type="number" min="1" max="2147483647" name="max_usos" value="<?=e($edit['max_usos']??'')?>"></label><label class="check-line"><input type="checkbox" name="ativo" <?=($edit['ativo']??1)?'checked':''?>> Ativo</label><button class="primary-btn">Salvar cupom</button></form></section>
+<div class="table-card table-scroll"><table><thead><tr><th>Código</th><th>Desconto</th><th>Validade</th><th>Usos / limite</th><th>Status</th><th>Ações</th></tr></thead><tbody><?php foreach($rows as $r):?><tr><td><?=e($r['codigo'])?></td><td><?=e($r['porcentagem'])?>%</td><td><?=$r['validade']?date('d/m/Y',strtotime($r['validade'])):'Sem prazo'?></td><td><?=(int)$r['usos']?> / <?=e($r['max_usos']??'Sem limite')?></td><td><?=$r['ativo']?'Ativo':'Desativado'?></td><td><div class="action-set"><a class="outline-btn small" href="?editar=<?=(int)$r['id']?>">Editar</a><form method="post"><?php csrfField();?><input type="hidden" name="id" value="<?=(int)$r['id']?>"><button class="warning-outline small" name="acao" value="alternar"><?=$r['ativo']?'Desativar':'Ativar'?></button></form></div></td></tr><?php endforeach;?></tbody></table></div>
+<?php pageEnd();

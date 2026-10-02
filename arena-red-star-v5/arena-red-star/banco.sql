@@ -4,11 +4,7 @@
 CREATE DATABASE IF NOT EXISTS arena_red_star CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE arena_red_star;
 
-DROP TABLE IF EXISTS agendamentos;
-DROP TABLE IF EXISTS recuperacoes_senha;
-DROP TABLE IF EXISTS usuarios;
-
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(120) NOT NULL,
     telefone VARCHAR(25) NULL,
@@ -18,7 +14,7 @@ CREATE TABLE usuarios (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
-CREATE TABLE agendamentos (
+CREATE TABLE IF NOT EXISTS agendamentos (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NULL,
     nome_cliente VARCHAR(120) NOT NULL,
@@ -38,7 +34,7 @@ CREATE TABLE agendamentos (
     INDEX idx_status (status)
 ) ENGINE=InnoDB;
 
-CREATE TABLE recuperacoes_senha (
+CREATE TABLE IF NOT EXISTS recuperacoes_senha (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
     codigo_hash VARCHAR(255) NOT NULL,
@@ -51,11 +47,78 @@ CREATE TABLE recuperacoes_senha (
 ) ENGINE=InnoDB;
 
 -- Administrador padrão: admin@arenaredstar.com / admin123
-INSERT INTO usuarios (nome, telefone, email, senha, tipo) VALUES
+INSERT IGNORE INTO usuarios (nome, telefone, email, senha, tipo) VALUES
 ('Administrador', NULL, 'admin@arenaredstar.com', '$2y$12$qbJmIqTDEmxVQIDQ0NMxBexpt8YqJMXdOZPmY6VcnmR6ifW/IIhra', 'admin');
 
--- Exemplos usando apenas o único campo disponível.
-INSERT INTO agendamentos (usuario_id, nome_cliente, telefone, data, horario_inicio, horario_fim, forma_pagamento, campo, status) VALUES
-(NULL, 'João Silva', '(11) 99999-1111', '2026-09-12', '19:00:00', '20:00:00', 'Pix', 'Campo 1', 'Pendente'),
-(NULL, 'Carlos Souza', '(11) 98888-2222', '2026-09-13', '20:00:00', '21:00:00', 'Dinheiro', 'Campo 1', 'Confirmado'),
-(NULL, 'Mariana Lima', '(11) 97777-3333', '2026-09-14', '21:00:00', '22:00:00', 'Cartão', 'Campo 1', 'Pendente');
+
+-- Atualização não destrutiva e repetível. Execute no banco arena_red_star existente.
+-- Preserve backup antes de aplicar. Não há exclusão de usuários/reservas/pagamentos.
+USE arena_red_star;
+ALTER TABLE agendamentos MODIFY status ENUM('Pendente','Confirmado','Cancelado','Concluído') NOT NULL DEFAULT 'Pendente';
+DELIMITER $$
+CREATE PROCEDURE arena_melhorias_20261002()
+BEGIN
+ IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='valor_original') THEN
+  ALTER TABLE agendamentos ADD valor_original DECIMAL(10,2) NULL;
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='desconto') THEN
+  ALTER TABLE agendamentos ADD desconto DECIMAL(10,2) NOT NULL DEFAULT 0;
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='agendamentos' AND column_name='cupom_codigo') THEN
+  ALTER TABLE agendamentos ADD cupom_codigo VARCHAR(30) NULL;
+ END IF;
+END$$
+CALL arena_melhorias_20261002()$$
+DROP PROCEDURE arena_melhorias_20261002$$
+DELIMITER ;
+CREATE TABLE IF NOT EXISTS avaliacoes (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ usuario_id INT UNSIGNED NOT NULL,
+ agendamento_id INT UNSIGNED NOT NULL UNIQUE,
+ nota TINYINT UNSIGNED NOT NULL,
+ comentario TEXT,
+ data_avaliacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+ FOREIGN KEY(agendamento_id) REFERENCES agendamentos(id),
+ CHECK(nota BETWEEN 1 AND 5)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS bloqueios_horarios (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ data DATE NOT NULL,
+ hora_inicio TIME NOT NULL,
+ hora_fim TIME NOT NULL,
+ motivo VARCHAR(255),
+ criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+ INDEX idx_bloqueio(data,hora_inicio,hora_fim),
+ CHECK(hora_fim>hora_inicio)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS cupons (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ codigo VARCHAR(30) NOT NULL UNIQUE,
+ porcentagem DECIMAL(5,2) NOT NULL,
+ validade DATE NULL,
+ max_usos INT UNSIGNED NULL,
+ ativo TINYINT UNSIGNED NOT NULL DEFAULT 1,
+ criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+ CHECK(porcentagem>0 AND porcentagem<=100)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS usuario_cupons (
+ usuario_id INT UNSIGNED NOT NULL,
+ cupom_id INT UNSIGNED NOT NULL,
+ concedido_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY(usuario_id,cupom_id),
+ FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+ FOREIGN KEY(cupom_id) REFERENCES cupons(id)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS usos_cupons (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ cupom_id INT UNSIGNED NOT NULL,
+ usuario_id INT UNSIGNED NOT NULL,
+ agendamento_id INT UNSIGNED NOT NULL UNIQUE,
+ usado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(cupom_id,usuario_id),
+ FOREIGN KEY(cupom_id) REFERENCES cupons(id),
+ FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+ FOREIGN KEY(agendamento_id) REFERENCES agendamentos(id)
+) ENGINE=InnoDB;
+INSERT INTO cupons(codigo,porcentagem) SELECT 'REDSTAR10',10 WHERE NOT EXISTS(SELECT 1 FROM cupons WHERE codigo='REDSTAR10');

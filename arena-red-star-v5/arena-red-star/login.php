@@ -1,6 +1,5 @@
 <?php
-session_start();
-require_once 'db.php';
+require_once 'app.php';
 
 if (isset($_SESSION['usuario_id'])) {
     header('Location: ' . (($_SESSION['usuario_tipo'] ?? 'cliente') === 'admin' ? 'admin.php' : 'usuario.php'));
@@ -13,6 +12,7 @@ unset($_SESSION['sucesso_login']);
 $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try { csrf(); } catch (DomainException $ex) { http_response_code(403); exit(e($ex->getMessage())); }
     $email = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="alert danger"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
 
-        <form method="post" class="form-stack" id="loginForm">
+        <form method="post" class="form-stack" id="loginForm"><?php csrfField(); ?>
             <label>E-mail
                 <div class="input-box"><span>✉</span><input type="email" name="email" id="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div>
             </label>
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="account-divider"><span>Ainda não tem uma conta?</span></div>
         <a class="outline-btn" href="cadastro.php">👤 Criar minha conta</a>
-        <p class="admin-demo">Admin: admin@arenaredstar.com · senha admin123</p>
+        <a href="index.php">← Conheça a Arena</a>
     </section>
 </main>
 <footer class="auth-footer">© <?= date('Y') ?> Red Star Point Ball · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer>
@@ -100,3 +100,4 @@ document.getElementById('loginForm').addEventListener('submit', function(e){cons
 </script>
 </body>
 </html>
+

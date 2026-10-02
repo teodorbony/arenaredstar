@@ -1,0 +1,30 @@
+Teste de integração (PHP 8 e MySQL/MariaDB)
+
+Use SOMENTE um banco descartável terminado em _test.
+1. Crie arena_red_star_test em uma instância local de teste.
+2. Importe banco.sql nessa instância, substituindo arena_red_star pelo nome
+   arena_red_star_test no conteúdo SQL. Não aplique fixtures no banco real.
+3. Defina ARENA_DB_NAME=arena_red_star_test e as demais ARENA_DB_* do servidor.
+4. Execute php tests/integration.php uma vez por banco de teste limpo.
+
+A suíte cria dados de teste e verifica: descontos e valores manipulados,
+consumo de cupom somente na reserva válida, bloqueios/sobreposições,
+propriedade de comprovantes e avaliações, limites/validade dos cupons,
+confirmação/conclusão/pagamento, filtros financeiros e datas inválidas.
+
+Teste do formulário/Pix sem dependências: node tests/pix.js
+Verifica ocultação inicial, valor final no payload do QR, invalidação do QR
+quando o cupom muda e tratamento de erros recebidos do servidor.
+
+Validação realizada em 02/10/2026:
+- Sintaxe de todos os arquivos PHP e JavaScript.
+- 40 verificações de integração em PHP 8.3 e MariaDB 10.11.
+- Reaplicação da migração preservando reservas e usos dos cupons.
+- Duas reservas simultâneas: uma criada, um único uso registrado.
+- Requisições HTTP de cadastro/login/reserva/comprovante/perfil/admin.
+- Criação/edição de bloqueio, criação/desativação de cupom e financeiro.
+- Validação de XSS, CSRF e acesso a páginas de outro usuário/admin.
+- Teste automatizado do formulário Pix.
+- Layout visual em navegador não validado: o ambiente de execução bloqueou
+  a inicialização do navegador de teste. CSS inclui ajustes responsivos
+  e de impressão, mas exige revisão visual no ambiente XAMPP.
