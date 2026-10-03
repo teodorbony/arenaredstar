@@ -56,6 +56,7 @@ const db=(sql,args=[])=>JSON.parse(execFileSync(process.env.ARENA_PHP_BIN||'php'
  assert.equal(db('SELECT nome FROM usuarios WHERE id=?',[uid])[0].nome,'Perfil atualizado navegador');
  await page.goto(base+'/logout.php');await page.goto(base+'/login.php');await page.locator('[name=email]').fill(email);await page.locator('[name=senha]').fill('nova12345');await page.getByRole('button',{name:'Entrar',exact:false}).click();await page.waitForURL(/usuario\.php/);
  await layout('calendario.php','calendario-mobile');
+ await layout('horarios-bloqueados.php','horarios-bloqueados-mobile');
  await page.goto(base+'/logout.php'); await page.goto(base+'/login.php');
  const admin=db("SELECT email FROM usuarios WHERE tipo='admin' AND email LIKE 't%-admin@example.com' ORDER BY id DESC LIMIT 1")[0].email;
  await page.locator('[name=email]').fill(admin);await page.locator('[name=senha]').fill('teste12345');await page.getByRole('button',{name:'Entrar',exact:false}).click();

@@ -35,7 +35,6 @@ foreach ($meusCupons as &$cupomUsuario) {
     $cupomUsuario['estado'] = $cupomUsuario['utilizado'] ? 'Utilizado' : (!$cupomUsuario['ativo'] ? 'Desativado' : ($vencido ? 'Vencido' : ($esgotado ? 'Esgotado' : ($primeiraReservaUsada ? 'Exclusivo para a primeira reserva' : 'Disponível'))));
 }
 unset($cupomUsuario);
-$horariosBloqueados = query("SELECT data,hora_inicio,hora_fim,motivo FROM bloqueios_horarios WHERE TIMESTAMP(data,hora_fim)>=NOW() ORDER BY data ASC,hora_inicio ASC")->fetchAll();
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -75,15 +74,6 @@ $horariosBloqueados = query("SELECT data,hora_inicio,hora_fim,motivo FROM bloque
             <button class="primary-btn full" type="submit">▣ Reservar agora</button>
         </form>
     </div>
-</section>
-
-<section class="landing-section section-wrap" id="horarios-bloqueados">
-    <div class="section-heading"><div><div class="panel-kicker">AGENDA DA ARENA</div><h2>Horários bloqueados</h2><p class="muted">Consulte os períodos indisponíveis antes de fazer sua reserva.</p></div><span class="count-badge"><?= count($horariosBloqueados) ?> bloqueio(s)</span></div>
-    <?php if (!$horariosBloqueados): ?>
-        <div class="admin-form-card"><p class="muted">Não há horários bloqueados a partir de agora.</p></div>
-    <?php else: ?>
-        <div class="table-card table-scroll"><table><thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Motivo</th></tr></thead><tbody><?php foreach ($horariosBloqueados as $bloqueio): ?><tr><td><?= date('d/m/Y', strtotime($bloqueio['data'])) ?></td><td><?= e(substr($bloqueio['hora_inicio'], 0, 5)) ?></td><td><?= e(substr($bloqueio['hora_fim'], 0, 5)) ?></td><td><?= e($bloqueio['motivo'] ?: 'Indisponível') ?></td></tr><?php endforeach; ?></tbody></table></div>
-    <?php endif; ?>
 </section>
 
 <section class="benefit-row section-wrap">

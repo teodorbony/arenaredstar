@@ -39,6 +39,7 @@ function renderTopbar(): void {
             ['usuario.php#agendar', '▣ Agendar'],
             ['meus-agendamentos.php', '☷ Meus agendamentos'],
             ['calendario.php', '▣ Calendário'],
+            ['horarios-bloqueados.php', '⛔ Horários bloqueados'],
             ['avaliar.php', '★ Avaliar'],
             ['perfil.php', 'Meu Perfil']
         ];
