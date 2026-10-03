@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $quantidadeAgendamentos = (int)query('SELECT COUNT(*) FROM agendamentos WHERE usuario_id=?', [$u['id']])->fetchColumn();
-$meusCupons = query('SELECT c.*,uc.concedido_em,(SELECT COUNT(*) FROM usos_cupons uso WHERE uso.cupom_id=c.id AND uso.usuario_id=uc.usuario_id) utilizado,(SELECT COUNT(*) FROM usos_cupons uso WHERE uso.cupom_id=c.id) total_usos FROM usuario_cupons uc JOIN cupons c ON c.id=uc.cupom_id WHERE uc.usuario_id=? ORDER BY c.ativo DESC,c.validade ASC', [$u['id']])->fetchAll();
+$meusCupons = query("SELECT c.*,uc.concedido_em,(SELECT COUNT(*) FROM usos_cupons uso WHERE uso.cupom_id=c.id AND uso.usuario_id=?) utilizado,(SELECT COUNT(*) FROM usos_cupons uso WHERE uso.cupom_id=c.id) total_usos FROM cupons c LEFT JOIN usuario_cupons uc ON uc.cupom_id=c.id AND uc.usuario_id=? WHERE c.codigo<>'REDSTAR10' OR uc.usuario_id IS NOT NULL ORDER BY c.ativo DESC,c.validade IS NULL,c.validade ASC,c.id DESC", [$u['id'],$u['id']])->fetchAll();
 foreach ($meusCupons as &$cupomUsuario) {
     $vencido = $cupomUsuario['validade'] && $cupomUsuario['validade'] < date('Y-m-d');
     $esgotado = $cupomUsuario['max_usos'] !== null && $cupomUsuario['total_usos'] >= $cupomUsuario['max_usos'];
@@ -35,6 +35,7 @@ foreach ($meusCupons as &$cupomUsuario) {
     $cupomUsuario['estado'] = $cupomUsuario['utilizado'] ? 'Utilizado' : (!$cupomUsuario['ativo'] ? 'Desativado' : ($vencido ? 'Vencido' : ($esgotado ? 'Esgotado' : ($primeiraReservaUsada ? 'Exclusivo para a primeira reserva' : 'Disponível'))));
 }
 unset($cupomUsuario);
+$horariosBloqueados = query("SELECT data,hora_inicio,hora_fim,motivo FROM bloqueios_horarios WHERE TIMESTAMP(data,hora_fim)>=NOW() ORDER BY data ASC,hora_inicio ASC")->fetchAll();
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -74,6 +75,15 @@ unset($cupomUsuario);
             <button class="primary-btn full" type="submit">▣ Reservar agora</button>
         </form>
     </div>
+</section>
+
+<section class="landing-section section-wrap" id="horarios-bloqueados">
+    <div class="section-heading"><div><div class="panel-kicker">AGENDA DA ARENA</div><h2>Horários bloqueados</h2><p class="muted">Consulte os períodos indisponíveis antes de fazer sua reserva.</p></div><span class="count-badge"><?= count($horariosBloqueados) ?> bloqueio(s)</span></div>
+    <?php if (!$horariosBloqueados): ?>
+        <div class="admin-form-card"><p class="muted">Não há horários bloqueados a partir de agora.</p></div>
+    <?php else: ?>
+        <div class="table-card table-scroll"><table><thead><tr><th>Data</th><th>Início</th><th>Fim</th><th>Motivo</th></tr></thead><tbody><?php foreach ($horariosBloqueados as $bloqueio): ?><tr><td><?= date('d/m/Y', strtotime($bloqueio['data'])) ?></td><td><?= e(substr($bloqueio['hora_inicio'], 0, 5)) ?></td><td><?= e(substr($bloqueio['hora_fim'], 0, 5)) ?></td><td><?= e($bloqueio['motivo'] ?: 'Indisponível') ?></td></tr><?php endforeach; ?></tbody></table></div>
+    <?php endif; ?>
 </section>
 
 <section class="benefit-row section-wrap">

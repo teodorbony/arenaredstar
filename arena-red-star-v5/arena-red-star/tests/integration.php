@@ -40,5 +40,7 @@ adminAction(['acao'=>'confirmar_pix','id'=>$manual['id']]);
 check(query('SELECT pagamento_status FROM agendamentos WHERE id=?',[$manual['id']])->fetchColumn()==='Confirmado','Admin confirma recebimento do Pix manual');
 $input['cupom']='';$input['inicio']='18:00';$input['fim']='19:00';$normal=createBooking($unused,$input);
 denied(fn()=>adminAction(['acao'=>'confirmar_pix','id'=>$normal]),'Pix de conta continua exigindo solicitação do cliente');
+adminAction(['acao'=>'receber','id'=>$normal]);$paidPix=receipt($unused['id'],$normal);
+check($paidPix['pagamento_status']==='Confirmado' && $paidPix['status']==='Confirmado','Admin confirma pagamento Pix antigo sem depender de nova reserva');
 echo "\n$n verificações passaram.\n";
 

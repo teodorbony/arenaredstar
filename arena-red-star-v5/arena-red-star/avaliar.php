@@ -32,7 +32,6 @@ pageStart('Avaliar a Arena');
 ?>
 <div class="admin-title">
     <div><div class="panel-kicker">SUA OPINIÃO</div><h1>Avaliar a Arena</h1><p class="muted">Você pode avaliar qualquer uma das suas reservas não canceladas, sem precisar esperar a conclusão.</p></div>
-    <a class="outline-btn" href="meus-agendamentos.php">Ver meus agendamentos</a>
 </div>
 
 <?php if ($disponiveis): ?>
@@ -59,8 +58,7 @@ pageStart('Avaliar a Arena');
 <?php else: ?>
 <section class="admin-form-card narrow">
     <h2>Nenhuma reserva disponível para avaliar</h2>
-    <p class="muted">Faça uma nova reserva ou confira abaixo as avaliações que você já publicou.</p>
-    <a class="primary-btn" href="usuario.php#agendar">Fazer agendamento</a>
+    <p class="muted">Confira abaixo as avaliações que você já publicou.</p>
 </section>
 <?php endif; ?>
 

@@ -35,12 +35,12 @@ function renderTopbar(): void {
         ];
     } elseif ($logged) {
         $links = [
+            ['index.php', 'Início'],
             ['usuario.php#agendar', '▣ Agendar'],
             ['meus-agendamentos.php', '☷ Meus agendamentos'],
             ['calendario.php', '▣ Calendário'],
             ['avaliar.php', '★ Avaliar'],
-            ['perfil.php', 'Meu Perfil'],
-            ['index.php', 'Início']
+            ['perfil.php', 'Meu Perfil']
         ];
     } else {
         $links = [

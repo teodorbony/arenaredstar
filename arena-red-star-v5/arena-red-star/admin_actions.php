@@ -18,8 +18,9 @@ function adminAction(array $in): void {
    available($r['data'],$r['horario_inicio'],$r['horario_fim'],$id);
    query("UPDATE agendamentos SET status='Confirmado',pagamento_status=? WHERE id=?",[$action==='confirmar_pix'?'Confirmado':$r['pagamento_status'],$id]);
   }elseif($action==='receber') {
-   if($r['status']==='Cancelado'||$r['forma_pagamento']==='Pix')throw new DomainException('Para Pix use a confirmação específica.');
-   query("UPDATE agendamentos SET pagamento_status='Confirmado' WHERE id=?",[$id]);
+   if($r['status']==='Cancelado')throw new DomainException('Não é possível confirmar o pagamento de uma reserva cancelada.');
+   if($r['forma_pagamento']==='Pix' && $r['status']==='Pendente') available($r['data'],$r['horario_inicio'],$r['horario_fim'],$id);
+   query("UPDATE agendamentos SET pagamento_status='Confirmado',status=CASE WHEN forma_pagamento='Pix' AND status='Pendente' THEN 'Confirmado' ELSE status END WHERE id=?",[$id]);
   }elseif($action==='concluir') {
    if($r['status']!=='Confirmado'||strtotime($r['data'].' '.$r['horario_fim'])>time())throw new DomainException('Conclua somente reservas confirmadas cujo horário já terminou.');
    query("UPDATE agendamentos SET status='Concluído' WHERE id=?",[$id]);

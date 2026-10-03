@@ -89,21 +89,18 @@ pageStart('Agendamentos');
                         <td><?= date('H:i', strtotime($a['horario_inicio'])) ?></td>
                         <td><?= date('H:i', strtotime($a['horario_fim'])) ?></td>
                         <td><?= money($a['valor']) ?></td>
-                        <td><?= e($a['forma_pagamento']) ?><?= $a['forma_pagamento'] === 'Pix' ? ' · '.e($a['pagamento_status']) : '' ?></td>
+                        <td><?= e($a['forma_pagamento']) ?><small class="cell-note"><?= e($a['pagamento_status']) ?></small></td>
                         <td>Campo 1</td>
                         <td><span class="status <?= $classe ?>"><?= e($a['status']) ?></span></td>
                         <td><div class="action-set">
-                            <?php if ($a['status'] === 'Pendente' && ($a['forma_pagamento'] !== 'Pix' || (float)$a['valor'] === 0.0)): ?>
+                            <?php if ($a['status'] === 'Pendente' && ($a['forma_pagamento'] !== 'Pix' || $a['pagamento_status'] === 'Confirmado' || (float)$a['valor'] === 0.0)): ?>
                                 <form method="post"><?php csrfField(); ?><input type="hidden" name="acao" value="confirmar"><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="success-outline small">Confirmar</button></form>
-                            <?php endif; ?>
-                            <?php if ($a['status'] === 'Pendente' && $a['forma_pagamento'] === 'Pix' && ($a['pagamento_status'] === 'Solicitado' || ($a['usuario_id'] === null && $a['pagamento_status'] === 'Pendente'))): ?>
-                                <form method="post"><?php csrfField(); ?><input type="hidden" name="acao" value="confirmar_pix"><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="success-outline small">Confirmar Pix</button></form>
                             <?php endif; ?>
                             <?php if (in_array($a['status'], ['Pendente', 'Confirmado'], true)): ?>
                                 <form method="post"><?php csrfField(); ?><input type="hidden" name="acao" value="cancelar"><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="warning-outline small">Cancelar</button></form>
                             <?php endif; ?>
-                            <?php if ($a['status'] !== 'Cancelado' && $a['forma_pagamento'] !== 'Pix' && $a['pagamento_status'] !== 'Confirmado'): ?>
-                                <form method="post"><?php csrfField(); ?><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="success-outline small" name="acao" value="receber">Confirmar recebimento</button></form>
+                            <?php if ($a['status'] !== 'Cancelado' && $a['pagamento_status'] !== 'Confirmado'): ?>
+                                <form method="post"><?php csrfField(); ?><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="success-outline small" name="acao" value="receber">Confirmar pagamento</button></form>
                             <?php endif; ?>
                             <?php if ($a['status'] === 'Confirmado' && strtotime($a['data'].' '.$a['horario_fim']) <= time()): ?>
                                 <form method="post"><?php csrfField(); ?><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="outline-btn small" name="acao" value="concluir">Concluir reserva</button></form>
