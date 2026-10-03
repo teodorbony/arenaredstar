@@ -18,8 +18,53 @@ function csrfField(): void { echo '<input type="hidden" name="csrf_token" value=
 function notice(string $message, string $type='success'): void { $_SESSION['notice']=[$message,$type]; }
 function showNotice(): void { if(isset($_SESSION['notice'])) { [$m,$t]=$_SESSION['notice']; unset($_SESSION['notice']); echo '<div role="status" class="alert '.e($t).'">'.e($m).'</div>'; } }
 function redirect(string $path): void { header('Location: '.$path); exit; }
+function renderTopbar(): void {
+    $logged = !empty($_SESSION['usuario_id']);
+    $admin = $logged && (($_SESSION['usuario_tipo'] ?? '') === 'admin');
+    $current = basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
+    $brandHref = $admin ? 'admin.php' : ($logged ? 'usuario.php' : 'index.php');
+    if ($admin) {
+        $links = [
+            ['admin.php', 'Painel'],
+            ['agendamentos.php', 'Agendamentos'],
+            ['calendario.php', 'Calendário'],
+            ['bloqueios.php', 'Bloqueios'],
+            ['cupons.php', 'Cupons'],
+            ['financeiro.php', 'Financeiro'],
+            ['perfil.php', 'Meu Perfil']
+        ];
+    } elseif ($logged) {
+        $links = [
+            ['usuario.php#agendar', '▣ Agendar'],
+            ['meus-agendamentos.php', '☷ Meus agendamentos'],
+            ['calendario.php', '▣ Calendário'],
+            ['avaliar.php', '★ Avaliar'],
+            ['perfil.php', 'Meu Perfil'],
+            ['index.php', 'Início']
+        ];
+    } else {
+        $links = [
+            ['index.php', 'Início'],
+            ['login.php', 'Entrar'],
+            ['cadastro.php', 'Criar conta']
+        ];
+    }
+    ?>
+<header class="topbar">
+    <a class="brand-mini" href="<?= e($brandHref) ?>"><img src="assets/logo-red-star.png" alt="Arena Red Star"><span>Red Star<br><small>Point Ball</small></span></a>
+    <nav class="nav-tabs">
+        <?php foreach ($links as [$href, $label]): $path = basename(parse_url($href, PHP_URL_PATH)); ?>
+            <a href="<?= e($href) ?>"<?= $current === $path ? ' class="active"' : '' ?>><?= e($label) ?></a>
+        <?php endforeach; ?>
+    </nav>
+    <?php if ($logged): ?>
+        <div class="user-actions"><span>👤 Olá, <?= e(explode(' ', trim($_SESSION['usuario_nome'] ?? 'Usuário'))[0]) ?></span><a href="logout.php">↪ Sair</a></div>
+    <?php endif; ?>
+</header>
+<?php
+}
 function pageStart(string $title): void { ?>
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | Arena Red Star</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"></head><body class="dashboard-page"><header class="topbar"><a class="brand-mini" href="index.php"><img src="assets/logo-red-star.png" alt="Arena Red Star"><span>Red Star<br><small>Point Ball</small></span></a><nav class="nav-tabs"><a href="index.php">Início</a><?php if(isset($_SESSION['usuario_id'])): ?><a href="<?=($_SESSION['usuario_tipo']??'')==='admin'?'admin.php':'usuario.php'?>">Meu painel</a><?php if(($_SESSION["usuario_tipo"]??"")!=="admin"):?><a href="meus-agendamentos.php">Meus agendamentos</a><?php endif;?><a href="calendario.php">Calendário</a><a href="perfil.php">Meu Perfil</a><?php if(($_SESSION['usuario_tipo']??'')==='admin'):?><a href="agendamentos.php">Agendamentos</a><a href="bloqueios.php">Bloqueios</a><a href="cupons.php">Cupons</a><a href="financeiro.php">Financeiro</a><?php endif; else:?><a href="login.php">Entrar</a><a href="cadastro.php">Criar conta</a><?php endif;?></nav><?php if(isset($_SESSION['usuario_id'])):?><div class="user-actions"><a href="logout.php">Sair</a></div><?php endif;?></header><main class="section-wrap content-page"><?php showNotice(); }
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | Arena Red Star</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"></head><body class="dashboard-page"><?php renderTopbar(); ?><main class="section-wrap content-page"><?php showNotice(); }
 function pageEnd(): void { ?></main><footer class="site-footer">© <?=date('Y')?> Arena Red Star · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer></body></html><?php }
 function validDate(string $s): bool { $d=DateTimeImmutable::createFromFormat('!Y-m-d',$s); return $d && $d->format('Y-m-d')===$s; }
 function period(string $date, string $start, string $end, bool $future=true): int {
@@ -71,8 +116,8 @@ function createBooking(array $u,array $in): int {
 function addReview(int $uid,int $id,int $score,string $comment): void {
     if($score<1 || $score>5 || mb_strlen($comment)>2000) throw new DomainException('Escolha de 1 a 5 estrelas e um comentário de até 2000 caracteres.');
     atomic(function()use($uid,$id,$score,$comment){
-        $r=query("SELECT id FROM agendamentos WHERE id=? AND usuario_id=? AND status='Concluído' AND TIMESTAMP(data,horario_fim)<=?",[$id,$uid,date('Y-m-d H:i:s')])->fetch();
-        if(!$r) throw new DomainException('Somente suas reservas concluídas podem ser avaliadas.');
+        $r=query("SELECT id FROM agendamentos WHERE id=? AND usuario_id=? AND status<>'Cancelado'",[$id,$uid])->fetch();
+        if(!$r) throw new DomainException('Escolha uma reserva válida da sua conta para avaliar.');
         if(query('SELECT id FROM avaliacoes WHERE agendamento_id=?',[$id])->fetch()) throw new DomainException('Esta reserva já foi avaliada.');
         query('INSERT INTO avaliacoes(usuario_id,agendamento_id,nota,comentario) VALUES(?,?,?,?)',[$uid,$id,$score,trim($comment)]);
     });

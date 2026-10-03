@@ -43,11 +43,7 @@ unset($cupomUsuario);
 <title>Agendar horário | Red Star Point Ball</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css">
 </head>
 <body class="dashboard-page">
-<header class="topbar">
-    <a class="brand-mini" href="usuario.php"><img src="assets/logo-red-star.png" alt="Red Star"><span>Red Star<br><small>Point Ball</small></span></a>
-    <nav class="nav-tabs"><a href="#agendar" class="active">▣ Agendar</a><a href="meus-agendamentos.php">☷ Meus agendamentos</a><a href="calendario.php">▣ Calendário</a><a href="perfil.php">Meu Perfil</a><a href="index.php">Início</a></nav>
-    <div class="user-actions"><span>👤 Olá, <?= e(explode(' ', trim($_SESSION['usuario_nome']))[0]) ?></span><a href="logout.php">↪ Sair</a></div>
-</header>
+<?php renderTopbar(); ?>
 
 <main>
 <section id="agendar" class="user-hero section-wrap">

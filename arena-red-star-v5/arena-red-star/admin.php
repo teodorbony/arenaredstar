@@ -14,12 +14,4 @@ pageStart('Painel Administrativo');
 
 <?php require 'dashboard.php'; ?>
 
-<section class="admin-form-card admin-agenda-callout">
-    <div>
-        <div class="panel-kicker">AGENDA</div>
-        <h2>Agendamentos em uma página exclusiva</h2>
-        <p class="muted">Cadastre reservas manuais, acompanhe pagamentos e altere o status dos horários.</p>
-    </div>
-    <a class="outline-btn" href="agendamentos.php">Abrir agendamentos →</a>
-</section>
 <?php pageEnd(); ?>

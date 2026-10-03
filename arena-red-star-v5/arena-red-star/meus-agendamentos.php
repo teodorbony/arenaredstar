@@ -79,7 +79,7 @@ pageStart('Meus Agendamentos');
             <td><div class="action-set vertical-actions">
                 <?php if ($a['forma_pagamento'] === 'Pix' && $a['pagamento_status'] === 'Pendente' && $a['status'] === 'Pendente'): ?><form method="post"><?php csrfField(); ?><input type="hidden" name="acao" value="solicitar_confirmacao_pix"><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="success-outline small" type="submit">Já realizei o Pix</button></form><?php endif; ?>
                 <a class="outline-btn small" href="comprovante.php?id=<?= (int)$a['id'] ?>">Ver comprovante</a>
-                <?php if ($a['status'] === 'Concluído' && !$a['avaliacao_id']): ?><a class="success-outline small" href="avaliar.php?id=<?= (int)$a['id'] ?>">Avaliar Arena ★</a><?php endif; ?>
+                <?php if ($a['status'] !== 'Cancelado' && !$a['avaliacao_id']): ?><a class="success-outline small" href="avaliar.php?id=<?= (int)$a['id'] ?>">Avaliar Arena ★</a><?php endif; ?>
                 <?php if (in_array($a['status'], ['Pendente', 'Confirmado'], true) && strtotime($a['data'].' '.$a['horario_inicio']) > time()): ?><form method="post" onsubmit="return confirm('Cancelar esta reserva?');"><?php csrfField(); ?><input type="hidden" name="acao" value="cancelar"><input type="hidden" name="id" value="<?= (int)$a['id'] ?>"><button class="danger-outline small" type="submit">Cancelar</button></form><?php endif; ?>
             </div></td>
         </tr>
