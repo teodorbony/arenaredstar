@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cupom' => $_POST['cupom'] ?? ''
         ]);
         notice('Reserva #'.$id.' enviada! Acompanhe a confirmação nesta página.');
+        $_SESSION['review_prompt_id'] = $id;
         $destino = 'meus-agendamentos.php';
     } catch (Throwable $ex) {
         handleError($ex);

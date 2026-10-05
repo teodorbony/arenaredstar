@@ -2,9 +2,15 @@
 // Incluído pelo admin.php autenticado. Os gráficos usam reservas/pagamentos reais.
 $month=date('Y-m-01');$next=date('Y-m-01',strtotime('+1 month',strtotime($month)));
 $m=query("SELECT SUM(status<>'Cancelado') reservas,COALESCE(SUM(CASE WHEN status<>'Cancelado' THEN TIME_TO_SEC(TIMEDIFF(horario_fim,horario_inicio))/3600 ELSE 0 END),0) horas,COALESCE(SUM(CASE WHEN status<>'Cancelado' AND pagamento_status='Confirmado' THEN valor ELSE 0 END),0) receita,SUM(pagamento_status IN ('Pendente','Solicitado') AND status<>'Cancelado') pendentes,SUM(pagamento_status='Confirmado' AND status<>'Cancelado') pagos,SUM(status='Cancelado') cancelados FROM agendamentos WHERE data>=? AND data<?",[$month,$next])->fetch();
-$from=date('Y-m-01',strtotime('-11 months',strtotime($month)));
-$monthly=query("SELECT DATE_FORMAT(data,'%Y-%m') mes,SUM(status<>'Cancelado') reservas,SUM(CASE WHEN status<>'Cancelado' AND pagamento_status='Confirmado' THEN valor ELSE 0 END) receita FROM agendamentos WHERE data>=? AND data<? GROUP BY mes ORDER BY mes",[$from,$next])->fetchAll();
-$indexed=array_column($monthly,null,'mes');$all=[];for($i=0;$i<12;$i++){$key=date('Y-m',strtotime("+$i months",strtotime($from)));$all[]=$indexed[$key]??['mes'=>$key,'reservas'=>0,'receita'=>0];}
+$from='2026-10-01';
+$monthly=query("SELECT DATE_FORMAT(data,'%Y-%m') mes,SUM(status<>'Cancelado') reservas,SUM(CASE WHEN status<>'Cancelado' AND pagamento_status='Confirmado' THEN valor ELSE 0 END) receita FROM agendamentos WHERE data>=? GROUP BY mes ORDER BY mes",[$from])->fetchAll();
+$indexed=array_column($monthly,null,'mes');
+$lastMonth=max(date('Y-m'),$monthly ? $monthly[count($monthly)-1]['mes'] : '2026-10','2026-10');
+$all=[];
+for($cursor=new DateTimeImmutable($from),$end=new DateTimeImmutable($lastMonth.'-01');$cursor<=$end;$cursor=$cursor->modify('+1 month')) {
+    $key=$cursor->format('Y-m');
+    $all[]=$indexed[$key]??['mes'=>$key,'reservas'=>0,'receita'=>0];
+}
 $popular=query("SELECT HOUR(horario_inicio) hora,COUNT(*) quantidade FROM agendamentos WHERE status<>'Cancelado' GROUP BY hora ORDER BY quantidade DESC,hora LIMIT 8")->fetchAll();
 $reviews=query("SELECT v.nota,v.comentario,v.data_avaliacao,u.nome usuario_nome,a.id agendamento_id,a.data FROM avaliacoes v JOIN usuarios u ON u.id=v.usuario_id JOIN agendamentos a ON a.id=v.agendamento_id ORDER BY v.data_avaliacao DESC,v.id DESC")->fetchAll();
 function bars(array $rows,string $key,string $label,bool $currency=false):void { $max=max(array_merge([1],array_map(fn($r)=>(float)$r[$key],$rows))); ?><div class="bar-chart"><?php foreach($rows as $r):?><div class="bar-row"><span><?=e($r[$label])?></span><div class="bar-track"><div style="width:<?=round((float)$r[$key]/$max*100,2)?>%"></div></div><strong><?=$currency?money($r[$key]):e($r[$key])?></strong></div><?php endforeach;?></div><?php }
