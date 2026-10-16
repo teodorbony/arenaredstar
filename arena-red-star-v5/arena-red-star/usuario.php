@@ -41,7 +41,7 @@ unset($cupomUsuario);
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Agendar horário | Red Star Point Ball</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css">
+<title>Agendar horário | Red Star Point Ball</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"><link rel="stylesheet" href="agendamento.css">
 </head>
 <body class="dashboard-page">
 <?php renderTopbar(); ?>
@@ -62,9 +62,21 @@ unset($cupomUsuario);
         <form method="post" class="booking-grid">
             <?php csrfField(); ?>
             <input type="hidden" name="acao" value="agendar">
-            <label>Data<input type="date" name="data" id="data" required></label>
-            <label>Início<input type="time" name="horario_inicio" required></label>
-            <label>Fim<input type="time" name="horario_fim" required></label>
+            <input type="hidden" name="data" id="data" required>
+            <input type="hidden" name="horario_inicio" id="horario_inicio" required>
+            <input type="hidden" name="horario_fim" id="horario_fim" required>
+            <div class="full booking-step">
+                <div class="booking-step-title"><span class="step-number">1</span><div><strong>Escolha o dia</strong><small>Selecione uma data disponível</small></div></div>
+                <div class="day-picker" id="day-picker" role="group" aria-label="Dias disponíveis"></div>
+            </div>
+            <div class="full booking-step">
+                <div class="booking-step-title"><span class="step-number">2</span><div><strong>Escolha o horário</strong><small>Horários livres para o dia selecionado</small></div></div>
+                <div class="slot-picker" id="slot-picker" role="group" aria-label="Horários disponíveis"><p class="slot-message">Selecione um dia para consultar os horários.</p></div>
+            </div>
+            <div class="full booking-step" id="duration-step" hidden>
+                <div class="booking-step-title"><span class="step-number">3</span><div><strong>Tempo de reserva</strong><small>Escolha quantas horas deseja reservar</small></div></div>
+                <div class="duration-picker" id="duration-picker" role="group" aria-label="Duração da reserva"></div>
+            </div>
             <label class="full">Forma de pagamento<select name="forma_pagamento" id="forma_pagamento" required><option value="" selected disabled>Selecione uma opção</option><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro (pagar no jogo)</option><option value="Cartão">Cartão (pagar no jogo)</option></select></label>
             <label class="full">Cupom de desconto<div class="coupon-input"><input name="cupom" id="cupom" maxlength="30" placeholder="Ex.: REDSTAR10"><button type="button" class="outline-btn" id="aplicar-cupom">Aplicar</button></div></label>
             <button type="button" class="coupon-modal-trigger full" data-modal-open="coupons-modal">🎟 Ver meus cupons disponíveis</button>
