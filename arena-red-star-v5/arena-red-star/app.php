@@ -82,9 +82,9 @@ function period(string $date, string $start, string $end, bool $future=true): in
     if ($minutes < 60 || $minutes % 60 !== 0) throw new DomainException('A reserva deve ter períodos inteiros de 1 hora.');
     return $minutes;
 }
-function available(string $date,string $start,string $end,int $exclude=0,int $blockExclude=0): void {
-    if(query("SELECT id FROM agendamentos WHERE data=? AND status<>'Cancelado' AND horario_inicio<? AND horario_fim>? AND id<>? LIMIT 1",[$date,$end,$start,$exclude])->fetch()) throw new DomainException('Esse período já possui uma reserva. Escolha outro.');
-    if(query('SELECT id FROM bloqueios_horarios WHERE data=? AND hora_inicio<? AND hora_fim>? AND id<>? LIMIT 1',[$date,$end,$start,$blockExclude])->fetch()) throw new DomainException('Esse período está bloqueado pela administração.');
+function available(string $date,string $start,string $end,int $exclude=0,int $blockExclude=0,bool $checkBookings=true): void {
+    if($checkBookings && query("SELECT id FROM agendamentos WHERE data=? AND status<>'Cancelado' AND horario_inicio<? AND horario_fim>? AND id<>? LIMIT 1",[$date,$end,$start,$exclude])->fetch()) throw new DomainException('Esse período já possui uma reserva. Escolha outro.');
+    if(query('SELECT id FROM bloqueios_horarios WHERE data=? AND hora_inicio<? AND hora_fim>? AND id<>? LIMIT 1',[$date,$end,$start,$blockExclude])->fetch()) throw new DomainException('Esse período já está bloqueado pela administração.');
 }
 // Todas as alterações da agenda/cupons usam a mesma trava; inclusive intervalos ainda vazios.
 function atomic(callable $fn) {
