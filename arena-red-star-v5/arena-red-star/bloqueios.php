@@ -9,7 +9,8 @@ if($_SERVER['REQUEST_METHOD']==='POST') { try {
   available($date,$start,$end,0,$id,false);
   if($id) {if(!query('SELECT id FROM bloqueios_horarios WHERE id=?',[$id])->fetch()) throw new DomainException('Bloqueio não encontrado.'); query('UPDATE bloqueios_horarios SET data=?,hora_inicio=?,hora_fim=?,motivo=? WHERE id=?',[$date,$start,$end,$reason,$id]);}
   else query('INSERT INTO bloqueios_horarios(data,hora_inicio,hora_fim,motivo) VALUES(?,?,?,?)',[$date,$start,$end,$reason]);
-  $stmt=query("UPDATE agendamentos SET status='Cancelado' WHERE data=? AND status IN ('Pendente','Confirmado') AND horario_inicio<? AND horario_fim>?",[$date,$end,$start]);
+  $agora=date('Y-m-d H:i:s');
+  $stmt=query("UPDATE agendamentos SET status='Cancelado' WHERE data=? AND status IN ('Pendente','Confirmado') AND horario_inicio<? AND horario_fim>? AND TIMESTAMP(data,horario_inicio)>?",[$date,$end,$start,$agora]);
   return (int)$stmt->rowCount();
  });
  notice($cancelados ? 'Bloqueio salvo. '.$cancelados.' reserva(s) coincidente(s) foi(ram) cancelada(s); o histórico foi preservado.' : 'Bloqueios atualizados.');
