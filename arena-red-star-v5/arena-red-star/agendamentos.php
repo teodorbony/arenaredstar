@@ -58,7 +58,7 @@ pageStart('Agendamentos');
             <label>Telefone<input type="text" name="telefone" id="telefone" required maxlength="25" placeholder="(00) 00000-0000"></label>
             <label>Data<input type="date" name="data" id="data" required></label>
             <label>Início<input type="time" name="horario_inicio" required></label>
-            <label>Fim<input type="time" name="horario_fim" required></label>
+            <label>Fim<input type="text" name="horario_fim" inputmode="numeric" pattern="(?:[01][0-9]|2[0-3]):00|24:00" placeholder="Ex.: 20:00 ou 00:00" title="Informe uma hora cheia até 00:00" required></label>
             <label>Campo<div class="fixed-field compact">⚽ Campo 1 (Único)</div></label>
             <label>Pagamento<select name="forma_pagamento"><option>Dinheiro</option><option>Cartão</option><option>Pix</option></select></label>
             <label>Status<select name="status"><option>Pendente</option><option>Confirmado</option><option>Cancelado</option></select></label>

@@ -9,12 +9,14 @@ try {
     $reservas = query("SELECT horario_inicio AS inicio, horario_fim AS fim FROM agendamentos WHERE data=? AND status<>'Cancelado'", [$date])->fetchAll();
     $bloqueios = query('SELECT hora_inicio AS inicio, hora_fim AS fim FROM bloqueios_horarios WHERE data=?', [$date])->fetchAll();
     $ocupados = array_merge($reservas, $bloqueios);
+    $diaSemana = (int)date('N', strtotime($date));
+    $abertura = $diaSemana <= 5 ? 18 : 14;
     $horarios = [];
-    for ($h = 0; $h <= 22; $h++) {
+    for ($h = $abertura; $h <= 23; $h++) {
         $inicio = sprintf('%02d:00', $h);
         if (strtotime($date.' '.$inicio) <= time()) continue;
         $duracoes = [];
-        for ($duracao = 1; $duracao <= 23 - $h; $duracao++) {
+        for ($duracao = 1; $duracao <= 24 - $h; $duracao++) {
             $fim = sprintf('%02d:00', $h + $duracao);
             $livre = true;
             foreach ($ocupados as $intervalo) {

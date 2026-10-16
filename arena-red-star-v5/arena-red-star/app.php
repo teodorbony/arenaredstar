@@ -68,11 +68,19 @@ function pageStart(string $title): void { ?>
 function pageEnd(): void { ?></main><footer class="site-footer">© <?=date('Y')?> Arena Red Star · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer></body></html><?php }
 function validDate(string $s): bool { $d=DateTimeImmutable::createFromFormat('!Y-m-d',$s); return $d && $d->format('Y-m-d')===$s; }
 function period(string $date, string $start, string $end, bool $future=true): int {
-    if(!validDate($date) || !preg_match('/^([01]\d|2[0-3]):[0-5]\d$/',$start) || !preg_match('/^([01]\d|2[0-3]):[0-5]\d$/',$end) || $end<=$start) throw new DomainException('Informe data e horários válidos no mesmo dia.');
-    if($future && strtotime("$date $start")<=time()) throw new DomainException('Escolha um horário futuro.');
-    $minutes=(strtotime("$date $end")-strtotime("$date $start"))/60;
-    if($minutes<60 || $minutes%60!==0) throw new DomainException('A reserva deve ter períodos inteiros de 1 hora.');
-    return (int)$minutes;
+    $validStart = preg_match('/^(?:[01]\d|2[0-3]):00$/', $start);
+    $validEnd = $end === '24:00' || preg_match('/^(?:[01]\d|2[0-3]):00$/', $end);
+    if (!validDate($date) || !$validStart || !$validEnd) throw new DomainException('Escolha um horário válido em hora cheia.');
+    $weekday = (int)date('N', strtotime($date));
+    $opening = $weekday <= 5 ? '18:00' : '14:00';
+    if ($start < $opening) throw new DomainException($weekday <= 5 ? 'Em dias de semana, os agendamentos começam às 18h.' : 'Nos finais de semana, os agendamentos começam às 14h.');
+    $startMinutes = ((int)substr($start, 0, 2) * 60) + (int)substr($start, 3, 2);
+    $endMinutes = $end === '24:00' ? 1440 : ((int)substr($end, 0, 2) * 60) + (int)substr($end, 3, 2);
+    if ($endMinutes <= $startMinutes) throw new DomainException('O horário final deve ser posterior ao início.');
+    if ($future && strtotime("$date $start") <= time()) throw new DomainException('Escolha um horário futuro.');
+    $minutes = $endMinutes - $startMinutes;
+    if ($minutes < 60 || $minutes % 60 !== 0) throw new DomainException('A reserva deve ter períodos inteiros de 1 hora.');
+    return $minutes;
 }
 function available(string $date,string $start,string $end,int $exclude=0,int $blockExclude=0): void {
     if(query("SELECT id FROM agendamentos WHERE data=? AND status<>'Cancelado' AND horario_inicio<? AND horario_fim>? AND id<>? LIMIT 1",[$date,$end,$start,$exclude])->fetch()) throw new DomainException('Esse período já possui uma reserva. Escolha outro.');
