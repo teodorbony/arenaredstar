@@ -1,0 +1,129 @@
+/* ==========================================================
+   Arena Red Star — Novo tema visual (apenas design)
+   Carregado DEPOIS de style.css / interface.css / agendamento.css.
+   Para voltar ao visual antigo, basta remover o <link> de tema.css.
+   ========================================================== */
+:root{
+  --red:#e8202f;--red2:#a30f1b;--red-soft:rgba(232,32,47,.14);
+  --black:#0b0909;--panel:#141111;--panel2:#1b1716;--line:rgba(255,255,255,.09);
+  --text:#f5f1ea;--muted:#a59d94;--green:#2fc46b;--grass:#1f8a4c;--yellow:#f2b51d;
+  --radius:14px;--shadow:0 30px 80px -30px rgba(0,0,0,.8);
+  --font-display:"Bebas Neue",Impact,sans-serif;--font-body:"Barlow",system-ui,sans-serif;
+}
+body{font-family:var(--font-body);background:var(--black);color:var(--text);letter-spacing:.01em}
+::selection{background:var(--red);color:#fff}
+
+/* ---------- Títulos com fonte de placar ---------- */
+.slogan,.big-callout,.auth-panel h1,.booking-card h2,.admin-title h1,.section-heading h2,
+.modal-card h2,.location-copy h3,.coupon-card h3,.stats strong,.day-option strong{
+  font-family:var(--font-display);font-weight:400;font-style:normal;letter-spacing:.02em;line-height:.92;text-shadow:none
+}
+.slogan{font-size:clamp(48px,6.5vw,104px)}
+.slogan span{transform:none;color:var(--red)}
+.big-callout{font-size:clamp(64px,9vw,140px)}
+.auth-panel h1,.booking-card h2,.admin-title h1,.section-heading h2{font-size:clamp(36px,4vw,56px)}
+.panel-kicker{font-family:var(--font-body);font-weight:700;letter-spacing:.32em;color:var(--green);font-size:12px;text-transform:uppercase}
+
+/* ---------- Fundo das telas de login/cadastro: campo à noite ---------- */
+.auth-page{
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%,rgba(255,255,255,.10),transparent 70%),
+    radial-gradient(circle at 12% 18%,rgba(232,32,47,.22),transparent 32%),
+    repeating-linear-gradient(90deg,rgba(47,196,107,.05) 0 90px,transparent 90px 180px),
+    linear-gradient(180deg,#0b0909 0%,#0e1410 60%,#0a1d12 100%)
+}
+.auth-page:before{height:30vh;background:linear-gradient(to top,rgba(31,138,76,.25),transparent)}
+.stadium-overlay{opacity:.25}
+.hero-logo{animation:none;filter:drop-shadow(0 20px 40px rgba(232,32,47,.35))}
+.brand-pills span{border-radius:999px;border-color:var(--line);background:rgba(20,17,17,.7);font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.12em}
+
+/* ---------- Cartões ---------- */
+.auth-panel,.booking-card,.admin-form-card,.table-card,.modal-card,.location-card{
+  background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--red);
+  border-radius:var(--radius);box-shadow:var(--shadow)
+}
+.booking-step{background:var(--panel2);border-color:var(--line);border-radius:12px}
+.step-number{background:var(--red);border-color:var(--red);color:#fff;font-family:var(--font-display);font-size:16px}
+
+/* ---------- Campos ---------- */
+.input-box,.fixed-field,.form-stack input,.booking-grid input,.admin-form-grid input,.admin-form-grid select{
+  background:#0f0d0d;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text)
+}
+.input-box:focus-within,.form-stack input:focus,.admin-form-grid input:focus,.admin-form-grid select:focus{
+  border-color:var(--green);box-shadow:0 0 0 3px rgba(47,196,107,.15)
+}
+.form-stack label,.booking-grid label,.admin-form-grid label{font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
+
+/* ---------- Botões ---------- */
+.primary-btn{
+  background:var(--red);border-radius:8px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  box-shadow:0 14px 34px -12px rgba(232,32,47,.7)
+}
+.primary-btn:hover{background:#ff2c3c;filter:none}
+.outline-btn{border-radius:8px;border-color:rgba(255,255,255,.18);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.outline-btn:hover{border-color:var(--red);background:var(--red-soft)}
+.danger-outline,.success-outline,.warning-outline{border-radius:999px;font-weight:700}
+.form-row-small a,.already a,.auth-footer a,.site-footer a,.user-actions a{color:var(--green)}
+
+/* ---------- Barra superior ---------- */
+.topbar{background:rgba(11,9,9,.9);border-bottom:1px solid var(--line);box-shadow:inset 0 -2px 0 var(--red)}
+.brand-mini{font-family:var(--font-display);font-size:22px;letter-spacing:.04em;color:var(--text)}
+.brand-mini small{color:var(--red)}
+.nav-tabs a{font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:12px;color:var(--muted);border-radius:6px}
+.nav-tabs a.active,.nav-tabs a:hover{background:transparent;color:var(--text);box-shadow:inset 0 -2px 0 var(--red)}
+
+/* ---------- Página do usuário ---------- */
+.dashboard-page{background:radial-gradient(circle at 85% 0%,rgba(232,32,47,.10),transparent 35%),var(--black)}
+.user-hero{background:radial-gradient(ellipse at 20% 50%,rgba(31,138,76,.14),transparent 45%)}
+.hero-copy>p{color:var(--muted);font-size:19px}
+.feature-list span{border:0;border-left:3px solid var(--red);background:var(--panel2);border-radius:4px;font-weight:600}
+.benefit-row article{background:var(--panel);border-color:var(--line);border-radius:12px}
+.benefit-row article div{font-weight:700}
+
+/* ---------- Seletor de dia e horário ---------- */
+.day-option,.time-option,.duration-option{background:var(--panel2);border-color:rgba(255,255,255,.1);border-radius:10px}
+.day-option:hover,.time-option:hover,.duration-option:hover{border-color:var(--green)}
+.day-option.selected,.duration-option.selected{background:var(--red);border-color:var(--red);box-shadow:0 10px 24px -10px rgba(232,32,47,.8)}
+.time-option.selected{background:var(--green);border-color:var(--green);color:#0b0909;box-shadow:0 10px 24px -10px rgba(47,196,107,.8)}
+.time-option{font-family:var(--font-display);font-size:18px;font-weight:400;letter-spacing:.04em}
+
+/* ---------- Tabelas, status e números ---------- */
+th{color:var(--muted);letter-spacing:.14em}
+th,td{border-bottom-color:var(--line)}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+.status{border-radius:999px;padding:5px 11px;text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+.status.confirmed{background:rgba(47,196,107,.15);color:#7ff0ad;box-shadow:inset 0 0 0 1px rgba(47,196,107,.4)}
+.status.pending{background:rgba(242,181,29,.14);color:#ffd266;box-shadow:inset 0 0 0 1px rgba(242,181,29,.4)}
+.status.cancelled{background:rgba(232,32,47,.14);color:#ff8a93;box-shadow:inset 0 0 0 1px rgba(232,32,47,.4)}
+.count-badge{background:var(--red-soft);border-color:rgba(232,32,47,.35);color:#ff7c86}
+.stats article{background:var(--panel);border-color:var(--line);border-left:4px solid var(--line);border-radius:10px}
+.stats .green{border-left-color:var(--green)}.stats .yellow{border-left-color:var(--yellow)}.stats .red{border-left-color:var(--red)}
+.stats strong{font-size:34px}
+
+/* ---------- Outros ---------- */
+.alert{border-radius:8px}
+.filter-tabs a{background:var(--panel2);border-color:var(--line);font-weight:600}
+.coupon-modal-trigger{border-color:rgba(47,196,107,.5);background:rgba(47,196,107,.07);color:#7ff0ad}
+.coupon-card{border-color:rgba(47,196,107,.4);background:rgba(47,196,107,.06)}
+.modal-close{background:var(--panel2);border-color:var(--line)}
+.auth-footer,.site-footer{background:var(--black);border-top-color:var(--line);color:var(--muted)}
+
+/* ---------- Ícones vetoriais (no lugar dos emojis) ---------- */
+.rs-icon{width:1em;height:1em;flex:none;display:inline-block;vertical-align:-.15em}
+.input-box>span{display:flex;align-items:center}
+.input-box>span .rs-icon{width:17px;height:17px;color:var(--muted)}
+.icon-btn .rs-icon{width:18px;height:18px;color:var(--muted);transition:.2s}
+.icon-btn:hover .rs-icon{color:var(--green)}
+.primary-btn .rs-icon,.outline-btn .rs-icon,.coupon-modal-trigger .rs-icon{vertical-align:-.18em;margin-right:3px}
+.primary-btn .rs-icon{width:17px;height:17px}
+.brand-pills span{display:inline-flex;align-items:center;gap:9px}
+.brand-pills .rs-icon,.feature-list .rs-icon{width:16px;height:16px;color:var(--red)}
+.feature-list span{display:inline-flex;align-items:center;gap:9px}
+.fixed-field{display:flex;align-items:center;gap:9px}
+.fixed-field .rs-icon{width:17px;height:17px;color:var(--red)}
+.benefit-row article{display:flex;align-items:center;gap:16px}
+.benefit-row article>.rs-icon{width:30px;height:30px;color:var(--red)}
+.photo-placeholder span{display:flex;justify-content:center}
+.photo-placeholder .rs-icon{width:46px;height:46px;color:var(--red);opacity:.85}
+.user-actions .rs-icon{width:14px;height:14px;vertical-align:-.12em;color:var(--muted)}
+.user-actions a .rs-icon{color:var(--green)}

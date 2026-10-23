@@ -1,6 +1,7 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 date_default_timezone_set('America/Sao_Paulo');
+require_once __DIR__.'/icons.php';
 require_once __DIR__.'/db.php';
 if (empty($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 function e($v): string { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
@@ -36,10 +37,9 @@ function renderTopbar(): void {
     } elseif ($logged) {
         $links = [
             ['index.php', 'Início'],
-            ['usuario.php#agendar', '▣ Agendar'],
-            ['meus-agendamentos.php', '☷ Meus agendamentos'],
-            ['calendario.php', '▣ Calendário'],
-            ['horarios-bloqueados.php', '⛔ Horários bloqueados'],
+            ['usuario.php#agendar', 'Agendar'],
+            ['meus-agendamentos.php', 'Meus agendamentos'],
+            ['calendario.php', 'Calendário'],
             ['perfil.php', 'Meu Perfil']
         ];
     } else {
@@ -58,13 +58,13 @@ function renderTopbar(): void {
         <?php endforeach; ?>
     </nav>
     <?php if ($logged): ?>
-        <div class="user-actions"><span>👤 Olá, <?= e(explode(' ', trim($_SESSION['usuario_nome'] ?? 'Usuário'))[0]) ?></span><a href="logout.php">↪ Sair</a></div>
+        <div class="user-actions"><span><?= rs_icon('user') ?> Olá, <?= e(explode(' ', trim($_SESSION['usuario_nome'] ?? 'Usuário'))[0]) ?></span><a href="logout.php"><?= rs_icon('logout') ?> Sair</a></div>
     <?php endif; ?>
 </header>
 <?php
 }
 function pageStart(string $title): void { ?>
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | Arena Red Star</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"></head><body class="dashboard-page"><?php renderTopbar(); ?><main class="section-wrap content-page"><?php showNotice(); }
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | Arena Red Star</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap"><link rel="stylesheet" href="tema.css"></head><body class="dashboard-page"><?php renderTopbar(); ?><main class="section-wrap content-page"><?php showNotice(); }
 function pageEnd(): void { ?></main><footer class="site-footer">© <?=date('Y')?> Arena Red Star · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer></body></html><?php }
 function validDate(string $s): bool { $d=DateTimeImmutable::createFromFormat('!Y-m-d',$s); return $d && $d->format('Y-m-d')===$s; }
 function period(string $date, string $start, string $end, bool $future=true): int {

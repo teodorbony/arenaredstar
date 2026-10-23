@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login | Red Star Point Ball</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap"><link rel="stylesheet" href="tema.css">
 </head>
 <body class="auth-page">
 <div class="stadium-overlay"></div>
@@ -56,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <img class="hero-logo" src="assets/logo-red-star.png" alt="Logo Red Star Point Ball">
         <div class="slogan">MAIS QUE FUTEBOL,<br><span>É RESENHA!</span></div>
         <div class="brand-pills">
-            <span>⚽ Campo society</span>
-            <span>👥 Amigos</span>
-            <span>🍻 Resenha</span>
+            <span><?= rs_icon('ball') ?> Campo society</span>
+            <span><?= rs_icon('users') ?> Amigos</span>
+            <span><?= rs_icon('glass') ?> Resenha</span>
         </div>
     </section>
 
@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="post" class="form-stack" id="loginForm"><?php csrfField(); ?>
             <label>E-mail
-                <div class="input-box"><span>✉</span><input type="email" name="email" id="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div>
+                <div class="input-box"><span><?= rs_icon('mail') ?></span><input type="email" name="email" id="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div>
             </label>
             <label>Senha
-                <div class="input-box"><span>🔒</span><input type="password" name="senha" id="senha" placeholder="Sua senha" required><button type="button" class="icon-btn" onclick="togglePassword('senha', this)">◉</button></div>
+                <div class="input-box"><span><?= rs_icon('lock') ?></span><input type="password" name="senha" id="senha" placeholder="Sua senha" required><button type="button" class="icon-btn" onclick="togglePassword('senha', this)"><?= rs_icon('eye') ?></button></div>
             </label>
             <div class="form-row-small">
                 <label class="check-line"><input type="checkbox"> Lembrar de mim</label>
@@ -89,13 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="account-divider"><span>Ainda não tem uma conta?</span></div>
-        <a class="outline-btn" href="cadastro.php">👤 Criar minha conta</a>
+        <a class="outline-btn" href="cadastro.php"><?= rs_icon('user') ?> Criar minha conta</a>
         <a href="index.php">← Conheça a Arena</a>
     </section>
 </main>
 <footer class="auth-footer">© <?= date('Y') ?> Red Star Point Ball · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer>
 <script>
-function togglePassword(id, btn){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';btn.textContent=el.type==='password'?'◉':'⊘';}
+const RS_ICONS={eye:<?= json_encode(rs_icon('eye')) ?>,eyeOff:<?= json_encode(rs_icon('eye-off')) ?>};
+function togglePassword(id, btn){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';btn.innerHTML=el.type==='password'?RS_ICONS.eye:RS_ICONS.eyeOff;}
 document.getElementById('loginForm').addEventListener('submit', function(e){const mail=document.getElementById('email');if(!mail.checkValidity()){e.preventDefault();alert('Digite um e-mail válido.');}});
 </script>
 </body>

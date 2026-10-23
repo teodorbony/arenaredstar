@@ -16,11 +16,11 @@ pageStart('Início');
     <img class="landing-logo" src="assets/logo-red-star.png" alt="Logo da Arena Red Star">
 </section>
 
-<section class="benefit-row"><article>⚽ <div><strong>Campo society</strong><small>Reserve seu horário online</small></div></article><article>👥 <div><strong>Chame sua equipe</strong><small>Futebol e confraternização</small></div></article><article>🎟 <div><strong>Boas-vindas</strong><small>Novas contas ganham REDSTAR10</small></div></article></section>
+<section class="benefit-row"><article><?= rs_icon('ball') ?> <div><strong>Campo society</strong><small>Reserve seu horário online</small></div></article><article><?= rs_icon('users') ?> <div><strong>Chame sua equipe</strong><small>Futebol e confraternização</small></div></article><article><?= rs_icon('ticket') ?> <div><strong>Boas-vindas</strong><small>Novas contas ganham REDSTAR10</small></div></article></section>
 
 <section id="galeria" class="landing-section">
     <div class="panel-kicker">NOSSA ESTRUTURA</div><h2>Conheça nossa Arena</h2>
-    <div class="gallery-grid"><?php foreach ($config['galeria'] as $photo): ?><figure><?php if (is_file(__DIR__.'/'.$photo['arquivo'])): ?><img src="<?= e($photo['arquivo']) ?>" alt="<?= e($photo['titulo']) ?>" loading="lazy"><?php else: ?><div class="photo-placeholder"><span>⚽</span><p>Foto em breve</p></div><?php endif; ?><figcaption><?= e($photo['titulo']) ?></figcaption></figure><?php endforeach; ?></div>
+    <div class="gallery-grid"><?php foreach ($config['galeria'] as $photo): ?><figure><?php if (is_file(__DIR__.'/'.$photo['arquivo'])): ?><img src="<?= e($photo['arquivo']) ?>" alt="<?= e($photo['titulo']) ?>" loading="lazy"><?php else: ?><div class="photo-placeholder"><span><?= rs_icon('ball') ?></span><p>Foto em breve</p></div><?php endif; ?><figcaption><?= e($photo['titulo']) ?></figcaption></figure><?php endforeach; ?></div>
     <div class="location-card">
         <div class="location-copy"><div class="panel-kicker">COMO CHEGAR</div><h3>Arena Red Star — Criciúma</h3><p>Rodovia José Spillere, Criciúma - SC</p><p class="muted">Abra a rota no celular ou consulte a localização diretamente no mapa.</p><a class="primary-btn" href="https://www.google.com/maps/search/?api=1&query=Arena+Red+Star+Rodovia+Jos%C3%A9+Spillere+Crici%C3%BAma+SC" target="_blank" rel="noopener">Abrir rota no Google Maps →</a></div>
         <div class="map-frame"><iframe title="Localização da Arena Red Star em Criciúma" src="https://www.google.com/maps?q=Arena%20Red%20Star%20Rodovia%20Jos%C3%A9%20Spillere%2C%20Crici%C3%BAma%20-%20SC&output=embed" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe></div>

@@ -5,7 +5,7 @@ header('Content-Type: application/json; charset=utf-8');
 try {
     $date = $_GET['data'] ?? '';
     if (!validDate($date)) throw new DomainException('Escolha uma data válida.');
-    if ($date < date('Y-m-d') || $date > date('Y-m-d', strtotime('+13 days'))) throw new DomainException('A data selecionada está fora do período disponível.');
+    if ($date < date('Y-m-d')) throw new DomainException('Escolha uma data futura.');
     $reservas = query("SELECT horario_inicio AS inicio, horario_fim AS fim FROM agendamentos WHERE data=? AND status<>'Cancelado'", [$date])->fetchAll();
     $bloqueios = query('SELECT hora_inicio AS inicio, hora_fim AS fim FROM bloqueios_horarios WHERE data=?', [$date])->fetchAll();
     $ocupados = array_merge($reservas, $bloqueios);

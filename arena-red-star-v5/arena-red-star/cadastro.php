@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $uid=(int)$pdo->lastInsertId();
             query("INSERT INTO usuario_cupons(usuario_id,cupom_id) SELECT ?,id FROM cupons WHERE codigo='REDSTAR10'",[$uid]);
             }); } catch (Throwable $ex) { handleError($ex); redirect('cadastro.php'); }
-            $_SESSION['sucesso_login'] = '🎉 Bem-vindo à Arena Red Star! Você ganhou o cupom REDSTAR10 com 10% de desconto na sua primeira reserva. Faça seu login.';
+            $_SESSION['sucesso_login'] = 'Bem-vindo à Arena Red Star! Você ganhou o cupom REDSTAR10 com 10% de desconto na sua primeira reserva. Faça seu login.';
             header('Location: login.php');
             exit;
         }
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cadastro | Red Star Point Ball</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap"><link rel="stylesheet" href="tema.css">
 </head>
 <body class="auth-page">
 <div class="stadium-overlay"></div>
@@ -78,19 +78,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($erro): ?><div class="alert danger"><?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
 
         <?php showNotice(); ?><form method="post" class="form-stack" id="cadastroForm"><?php csrfField(); ?>
-            <label>Nome completo<div class="input-box"><span>♙</span><input type="text" name="nome" value="<?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu nome completo" required maxlength="120"></div></label>
-            <label>Telefone<div class="input-box"><span>☎</span><input type="text" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone, ENT_QUOTES, 'UTF-8') ?>" placeholder="(00) 00000-0000" required maxlength="20"></div></label>
-            <label>E-mail<div class="input-box"><span>✉</span><input type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div></label>
-            <label>Senha<div class="input-box"><span>🔒</span><input type="password" name="senha" id="senha" placeholder="Mínimo de 6 caracteres" required minlength="6"><button type="button" class="icon-btn" onclick="togglePassword('senha', this)">◉</button></div></label>
-            <label>Confirmar senha<div class="input-box"><span>🔒</span><input type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Repita sua senha" required minlength="6"><button type="button" class="icon-btn" onclick="togglePassword('confirmar_senha', this)">◉</button></div></label>
-            <button class="primary-btn" type="submit">👤 Cadastrar</button>
+            <label>Nome completo<div class="input-box"><span><?= rs_icon('user') ?></span><input type="text" name="nome" value="<?= htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu nome completo" required maxlength="120"></div></label>
+            <label>Telefone<div class="input-box"><span><?= rs_icon('phone') ?></span><input type="text" name="telefone" id="telefone" value="<?= htmlspecialchars($telefone, ENT_QUOTES, 'UTF-8') ?>" placeholder="(00) 00000-0000" required maxlength="20"></div></label>
+            <label>E-mail<div class="input-box"><span><?= rs_icon('mail') ?></span><input type="email" name="email" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" placeholder="Seu e-mail" required></div></label>
+            <label>Senha<div class="input-box"><span><?= rs_icon('lock') ?></span><input type="password" name="senha" id="senha" placeholder="Mínimo de 6 caracteres" required minlength="6"><button type="button" class="icon-btn" onclick="togglePassword('senha', this)"><?= rs_icon('eye') ?></button></div></label>
+            <label>Confirmar senha<div class="input-box"><span><?= rs_icon('lock') ?></span><input type="password" name="confirmar_senha" id="confirmar_senha" placeholder="Repita sua senha" required minlength="6"><button type="button" class="icon-btn" onclick="togglePassword('confirmar_senha', this)"><?= rs_icon('eye') ?></button></div></label>
+            <button class="primary-btn" type="submit"><?= rs_icon('user') ?> Cadastrar</button>
         </form>
         <p class="already">Já tem uma conta? <a href="login.php">Fazer login</a></p>
     </section>
 </main>
 <footer class="auth-footer">© <?= date('Y') ?> Red Star Point Ball · <a href="https://www.instagram.com/redstarpointball/" target="_blank" rel="noopener">@redstarpointball</a></footer>
 <script>
-function togglePassword(id,btn){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';btn.textContent=el.type==='password'?'◉':'⊘';}
+const RS_ICONS={eye:<?= json_encode(rs_icon('eye')) ?>,eyeOff:<?= json_encode(rs_icon('eye-off')) ?>};
+function togglePassword(id,btn){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';btn.innerHTML=el.type==='password'?RS_ICONS.eye:RS_ICONS.eyeOff;}
 const tel=document.getElementById('telefone');tel.addEventListener('input',function(){let v=this.value.replace(/\D/g,'').slice(0,11);if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');else if(v.length>6)v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');this.value=v;});
 </script>
 </body>

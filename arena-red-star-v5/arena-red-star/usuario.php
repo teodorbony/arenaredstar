@@ -41,7 +41,7 @@ unset($cupomUsuario);
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Agendar horário | Red Star Point Ball</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"><link rel="stylesheet" href="agendamento.css">
+<title>Agendar horário | Red Star Point Ball</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="interface.css"><link rel="stylesheet" href="agendamento.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap"><link rel="stylesheet" href="tema.css">
 </head>
 <body class="dashboard-page">
 <?php renderTopbar(); ?>
@@ -51,7 +51,7 @@ unset($cupomUsuario);
     <div class="hero-copy reveal">
         <div class="big-callout">GARANTA<br>SEU HORÁRIO</div>
         <p>Reserve o campo, chame os amigos<br>e venha fazer parte dessa resenha!</p>
-        <div class="feature-list"><span>⚽ Campo society</span><span>👥 Confraternização</span><span>🍻 Bebidas</span></div>
+        <div class="feature-list"><span><?= rs_icon('ball') ?> Campo society</span><span><?= rs_icon('users') ?> Confraternização</span><span><?= rs_icon('glass') ?> Bebidas</span></div>
     </div>
 
     <div class="booking-card reveal delay-1">
@@ -67,7 +67,15 @@ unset($cupomUsuario);
             <input type="hidden" name="horario_fim" id="horario_fim" required>
             <div class="full booking-step">
                 <div class="booking-step-title"><span class="step-number">1</span><div><strong>Escolha o dia</strong><small>Selecione uma data disponível</small></div></div>
-                <div class="day-picker" id="day-picker" role="group" aria-label="Dias disponíveis"></div>
+                <div class="calendar-picker" aria-label="Calendário para selecionar a data">
+                    <div class="calendar-navigation">
+                        <button type="button" id="calendar-prev" class="calendar-nav-btn" aria-label="Mês anterior">‹</button>
+                        <strong id="calendar-month" aria-live="polite"></strong>
+                        <button type="button" id="calendar-next" class="calendar-nav-btn" aria-label="Próximo mês">›</button>
+                    </div>
+                    <div class="calendar-weekdays" aria-hidden="true"><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span></div>
+                    <div class="day-picker" id="day-picker" role="group" aria-label="Dias disponíveis"></div>
+                </div>
             </div>
             <div class="full booking-step">
                 <div class="booking-step-title"><span class="step-number">2</span><div><strong>Escolha o horário</strong><small>Horários livres para o dia selecionado</small></div></div>
@@ -79,20 +87,20 @@ unset($cupomUsuario);
             </div>
             <label class="full">Forma de pagamento<select name="forma_pagamento" id="forma_pagamento" required><option value="" selected disabled>Selecione uma opção</option><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro (pagar no jogo)</option><option value="Cartão">Cartão (pagar no jogo)</option></select></label>
             <label class="full">Cupom de desconto<div class="coupon-input"><input name="cupom" id="cupom" maxlength="30" placeholder="Ex.: REDSTAR10"><button type="button" class="outline-btn" id="aplicar-cupom">Aplicar</button></div></label>
-            <button type="button" class="coupon-modal-trigger full" data-modal-open="coupons-modal">🎟 Ver meus cupons disponíveis</button>
+            <button type="button" class="coupon-modal-trigger full" data-modal-open="coupons-modal"><?= rs_icon('ticket') ?> Ver meus cupons disponíveis</button>
             <div class="price-summary full" id="resumo-valor" aria-live="polite">Escolha a data e os horários para calcular o valor.</div>
             <div class="pix-box full" id="pix-box" hidden><strong>Pagamento por Pix</strong><b id="pix-valor">Selecione os horários para calcular o valor.</b><img id="pix-qrcode" alt="QR Code Pix"><small>Após pagar, solicite a confirmação do Pix em Meus agendamentos.</small></div>
-            <label class="full">Campo<div class="fixed-field">⚽ Campo 1 (Único)</div></label>
+            <label class="full">Campo<div class="fixed-field"><?= rs_icon('ball') ?> Campo 1 (Único)</div></label>
             <p class="single-field-note">Temos apenas 1 campo society.</p>
-            <button class="primary-btn full" type="submit">▣ Reservar agora</button>
+            <button class="primary-btn full" type="submit"><?= rs_icon('ball') ?> Reservar agora</button>
         </form>
     </div>
 </section>
 
 <section class="benefit-row section-wrap">
-    <article>🏆 <div><strong>Estrutura de qualidade</strong><small>Campo society bem cuidado</small></div></article>
-    <article>👥 <div><strong>Ambiente familiar</strong><small>Para todas as idades</small></div></article>
-    <article>☷ <div><strong>Agenda organizada</strong><small><a href="meus-agendamentos.php">Acompanhar minhas reservas →</a></small></div></article>
+    <article><?= rs_icon('trophy') ?> <div><strong>Estrutura de qualidade</strong><small>Campo society bem cuidado</small></div></article>
+    <article><?= rs_icon('users') ?> <div><strong>Ambiente familiar</strong><small>Para todas as idades</small></div></article>
+    <article><?= rs_icon('calendar') ?> <div><strong>Agenda organizada</strong><small><a href="meus-agendamentos.php">Acompanhar minhas reservas →</a></small></div></article>
 </section>
 </main>
 
