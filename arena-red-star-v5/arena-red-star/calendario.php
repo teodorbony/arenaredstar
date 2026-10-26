@@ -56,7 +56,6 @@ pageStart('Calendário de horários');
                 <div class="calendar-day<?= isset($porDia[$dia]) ? ' has-game' : '' ?>">
                     <time class="calendar-date" datetime="<?= e($dataDia) ?>"<?= $dataDia === date('Y-m-d') ? ' aria-current="date"' : '' ?>><strong><?= $dia ?></strong><span class="calendar-weekday"><?= e($diasSemana[(int)date('w', strtotime($dataDia))]) ?></span></time>
                     <div class="calendar-events">
-                    <?php if (empty($porDia[$dia])): ?><p class="calendar-free">Sem reservas ou bloqueios.</p><?php endif; ?>
                     <?php foreach ($porDia[$dia] ?? [] as $j): ?>
                         <article class="game-chip"><b><?= e($j['nome_cliente']) ?></b><span><?= date('H:i', strtotime($j['horario_inicio'])) ?>–<?= date('H:i', strtotime($j['horario_fim'])) ?></span><small><?= e($j['status']) ?></small></article>
                     <?php endforeach; ?>
