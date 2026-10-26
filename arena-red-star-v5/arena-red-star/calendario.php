@@ -33,6 +33,8 @@ if ($u['tipo'] !== 'admin') {
 
 $diasNoMes = (int)$primeiro->format('t');
 $inicioSemana = (int)$primeiro->format('N') - 1;
+$meses = [1=>'Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+$diasSemana = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
 
 pageStart('Calendário de horários');
 ?>
@@ -42,19 +44,23 @@ pageStart('Calendário de horários');
     </div>
     <div class="calendar-controls">
         <a class="outline-btn" href="?mes=<?= e($anterior->format('Y-m')) ?>">← Mês anterior</a>
-        <h2><?= e(ucfirst($primeiro->format('F Y'))) ?></h2>
+        <h2><?= e($meses[(int)$primeiro->format('n')].' '.$primeiro->format('Y')) ?></h2>
         <a class="outline-btn" href="?mes=<?= e($proximo->format('Y-m')) ?>">Próximo mês →</a>
     </div>
     <div class="calendar-card">
-        <div class="calendar-grid calendar-weekdays"><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div><div>Dom</div></div>
-        <div class="calendar-grid">
-            <?php for ($i = 0; $i < $inicioSemana; $i++): ?><div class="calendar-day muted-day"></div><?php endfor; ?>
+        <div class="calendar-grid calendar-weekdays" aria-hidden="true"><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div><div>Dom</div></div>
+        <div class="calendar-grid calendar-days">
+            <?php for ($i = 0; $i < $inicioSemana; $i++): ?><div class="calendar-day muted-day" aria-hidden="true"></div><?php endfor; ?>
             <?php for ($dia = 1; $dia <= $diasNoMes; $dia++): ?>
+                <?php $dataDia = $mes.'-'.str_pad((string)$dia, 2, '0', STR_PAD_LEFT); ?>
                 <div class="calendar-day<?= isset($porDia[$dia]) ? ' has-game' : '' ?>">
-                    <strong><?= $dia ?></strong>
+                    <time class="calendar-date" datetime="<?= e($dataDia) ?>"<?= $dataDia === date('Y-m-d') ? ' aria-current="date"' : '' ?>><strong><?= $dia ?></strong><span class="calendar-weekday"><?= e($diasSemana[(int)date('w', strtotime($dataDia))]) ?></span></time>
+                    <div class="calendar-events">
+                    <?php if (empty($porDia[$dia])): ?><p class="calendar-free">Sem reservas ou bloqueios.</p><?php endif; ?>
                     <?php foreach ($porDia[$dia] ?? [] as $j): ?>
                         <article class="game-chip"><b><?= e($j['nome_cliente']) ?></b><span><?= date('H:i', strtotime($j['horario_inicio'])) ?>–<?= date('H:i', strtotime($j['horario_fim'])) ?></span><small><?= e($j['status']) ?></small></article>
                     <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endfor; ?>
         </div>

@@ -1,0 +1,223 @@
+/* ==========================================================
+   Arena Red Star — Camada "profissional" (apenas visual)
+   Carregada depois de tema.css. Remova o <link> para voltar.
+   ========================================================== */
+:root{
+  --red:#e11d2e;--red2:#b5121f;--red-soft:rgba(225,29,46,.10);
+  --black:#0c0c0e;--panel:#141417;--panel2:#1a1a1e;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.12);
+  --text:#f4f4f5;--muted:#9a9aa3;--green:#22c55e;--yellow:#eab308;
+  --radius:16px;
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset,0 24px 48px -24px rgba(0,0,0,.7);
+  --font-display:"Archivo","Manrope",system-ui,sans-serif;
+  --font-body:"Manrope",system-ui,sans-serif;
+}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:var(--font-body);font-size:15px;line-height:1.55;letter-spacing:0;background:var(--black);color:var(--text)}
+
+/* ---------- Tipografia: títulos sóbrios, sem caixa alta forçada ---------- */
+.slogan,.big-callout,.auth-panel h1,.booking-card h2,.admin-title h1,.section-heading h2,
+.modal-card h2,.location-copy h3,.coupon-card h3,.stats strong,.day-option strong{
+  font-family:var(--font-display);font-weight:800;letter-spacing:-.025em;line-height:1.05;text-transform:none
+}
+.slogan{font-size:clamp(40px,5vw,72px)}
+.big-callout,.hero-copy .big-callout{font-size:clamp(36px,4.6vw,60px);line-height:1.06}
+.auth-panel h1,.booking-card h2,.admin-title h1,.section-heading h2{font-size:clamp(26px,2.6vw,34px)}
+.modal-card h2{font-size:26px}
+.stats strong{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.panel-kicker{
+  display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.16em;
+  color:var(--red);text-transform:uppercase
+}
+.panel-kicker:before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+.muted,.hero-copy>p{color:var(--muted)}
+.hero-copy>p{font-size:17px}
+
+/* ---------- Fundos mais limpos ---------- */
+.auth-page{
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 0%,rgba(225,29,46,.14),transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,rgba(255,255,255,.04),transparent 60%),
+    var(--black)
+}
+.auth-page:before,.stadium-overlay{display:none}
+.dashboard-page{background:radial-gradient(ellipse 60% 35% at 50% -5%,rgba(225,29,46,.10),transparent 70%),var(--black)}
+.user-hero{background:none}
+.hero-logo{filter:drop-shadow(0 24px 48px rgba(0,0,0,.5))}
+.brand-pills span{
+  border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.03);
+  text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--text);backdrop-filter:blur(6px)
+}
+
+/* ---------- Cartões ---------- */
+.auth-panel,.booking-card,.admin-form-card,.table-card,.modal-card,.location-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.025),transparent 120px),var(--panel);
+  border:1px solid var(--line);border-top:1px solid var(--line2);border-radius:var(--radius);box-shadow:var(--shadow)
+}
+.auth-panel{padding:clamp(28px,3.5vw,44px)}
+.booking-step{background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+.step-number{
+  width:28px;height:28px;display:inline-grid;place-items:center;border-radius:8px;
+  background:var(--red-soft);border:1px solid rgba(225,29,46,.35);color:#ff6b77;
+  font-family:var(--font-body);font-weight:800;font-size:13px
+}
+
+/* ---------- Campos ---------- */
+.input-box,.fixed-field,.form-stack input,.booking-grid input,.admin-form-grid input,.admin-form-grid select,textarea{
+  background:#0f0f12;border:1px solid var(--line2);border-radius:10px;color:var(--text);
+  transition:border-color .15s,box-shadow .15s
+}
+.input-box:hover,.form-stack input:hover,.admin-form-grid input:hover{border-color:rgba(255,255,255,.2)}
+.input-box:focus-within,.form-stack input:focus,.booking-grid input:focus,.admin-form-grid input:focus,.admin-form-grid select:focus{
+  outline:none;border-color:var(--red);box-shadow:0 0 0 4px var(--red-soft)
+}
+.form-stack label,.booking-grid label,.admin-form-grid label{
+  font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;color:#d4d4d8
+}
+input::placeholder{color:#62626b}
+
+/* ---------- Botões ---------- */
+.primary-btn{
+  background:var(--red);color:#fff;border:1px solid transparent;border-radius:10px;
+  font-weight:700;font-size:15px;letter-spacing:0;text-transform:none;
+  box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 8px 20px -8px rgba(225,29,46,.6);
+  transition:background .15s,transform .15s,box-shadow .15s
+}
+.primary-btn:hover{background:var(--red2);transform:translateY(-1px)}
+.primary-btn:active{transform:none}
+.outline-btn{
+  border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.02);
+  text-transform:none;letter-spacing:0;font-weight:600;color:var(--text);transition:.15s
+}
+.outline-btn:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.06)}
+.danger-outline,.success-outline,.warning-outline{border-radius:8px;font-weight:600;letter-spacing:0;text-transform:none}
+.primary-btn:focus-visible,.outline-btn:focus-visible,a:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.form-row-small a,.already a,.auth-footer a,.site-footer a,.user-actions a{color:#ff6b77;font-weight:600}
+.form-row-small a:hover,.already a:hover{color:#fff}
+
+/* ---------- Barra superior ---------- */
+.topbar{
+  background:rgba(12,12,14,.8);backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);
+  border-bottom:1px solid var(--line);box-shadow:none
+}
+.brand-mini{font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.01em}
+.nav-tabs a{
+  text-transform:none;letter-spacing:0;font-size:14px;font-weight:600;color:var(--muted);
+  border-radius:8px;padding:8px 12px;transition:.15s
+}
+.nav-tabs a:hover{color:var(--text);background:rgba(255,255,255,.05);box-shadow:none}
+.nav-tabs a.active{color:var(--text);background:rgba(255,255,255,.08);box-shadow:none}
+
+/* ---------- Destaques e benefícios ---------- */
+.feature-list span{
+  border:1px solid var(--line2);border-left:1px solid var(--line2);border-radius:999px;
+  background:rgba(255,255,255,.03);font-weight:600;font-size:13px
+}
+.benefit-row article{background:var(--panel);border:1px solid var(--line);border-radius:14px;transition:border-color .2s}
+.benefit-row article:hover{border-color:var(--line2)}
+.benefit-row article>.rs-icon{
+  width:44px;height:44px;padding:11px;border-radius:12px;background:var(--red-soft);color:#ff6b77
+}
+
+/* ---------- Seletores de dia/horário ---------- */
+.day-option,.time-option,.duration-option{
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;transition:.15s
+}
+.day-option:hover,.time-option:hover,.duration-option:hover{border-color:rgba(255,255,255,.25);background:#202025}
+.day-option.selected,.duration-option.selected,.time-option.selected{
+  background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 20px -10px rgba(225,29,46,.8)
+}
+.time-option{font-family:var(--font-body);font-size:14px;font-weight:700;letter-spacing:0;font-variant-numeric:tabular-nums}
+
+/* ---------- Tabelas ---------- */
+table{font-variant-numeric:tabular-nums}
+th{
+  color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,255,255,.02)
+}
+th,td{border-bottom:1px solid var(--line)}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+.status{border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:none}
+.status.confirmed{background:rgba(34,197,94,.12);color:#86efac;box-shadow:inset 0 0 0 1px rgba(34,197,94,.3)}
+.status.pending{background:rgba(234,179,8,.12);color:#fde047;box-shadow:inset 0 0 0 1px rgba(234,179,8,.3)}
+.status.cancelled{background:rgba(225,29,46,.12);color:#fda4af;box-shadow:inset 0 0 0 1px rgba(225,29,46,.3)}
+.count-badge{border-radius:6px;background:var(--red-soft);border:1px solid rgba(225,29,46,.3);color:#ff8a93}
+
+/* ---------- Indicadores ---------- */
+.stats article{
+  position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px
+}
+.stats article:before{content:"";position:absolute;left:0;top:0;right:0;height:2px;background:var(--line2)}
+.stats .green:before{background:var(--green)}.stats .yellow:before{background:var(--yellow)}.stats .red:before{background:var(--red)}
+.stats .green,.stats .yellow,.stats .red{border-left:1px solid var(--line)}
+
+/* ---------- Outros ---------- */
+.alert{border-radius:10px;font-size:14px}
+.filter-tabs a{background:transparent;border:1px solid var(--line2);border-radius:8px;font-weight:600;color:var(--muted)}
+.filter-tabs a.active,.filter-tabs a:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.coupon-modal-trigger{border:1px dashed rgba(255,255,255,.22);background:transparent;color:var(--text);border-radius:10px}
+.coupon-modal-trigger:hover{border-color:var(--red);color:#fff}
+.coupon-card{border:1px solid var(--line2);background:var(--panel2)}
+.modal-backdrop{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-close{background:var(--panel2);border:1px solid var(--line);border-radius:8px}
+.auth-footer,.site-footer{background:transparent;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.back-link{color:var(--muted);font-weight:600;font-size:14px;transition:color .15s}
+.back-link:hover{color:var(--text)}
+.icon-btn:hover .rs-icon{color:var(--text)}
+.brand-pills .rs-icon,.feature-list .rs-icon,.fixed-field .rs-icon{color:#ff6b77}
+.user-actions a .rs-icon{color:#ff6b77}
+
+/* Barra de rolagem discreta */
+*{scrollbar-color:#2a2a30 transparent;scrollbar-width:thin}
+
+@media(max-width:700px){
+  body{font-size:14px}
+  .booking-card h2{font-size:clamp(24px,7vw,30px)}
+  .hero-copy .big-callout{font-size:clamp(32px,8vw,44px)}
+  .nav-tabs a{font-size:13px;padding:7px 10px}
+}
+
+/* Calendário mensal: grade no desktop e agenda por dia no celular. */
+.calendar-page{min-width:0;padding-top:12px}
+.calendar-page .calendar-controls{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.calendar-page .calendar-controls h2{width:auto;order:0;text-align:center;font-size:clamp(20px,2.4vw,30px)}
+.calendar-page .calendar-controls a{min-width:0;white-space:normal}
+.calendar-page .calendar-controls a:first-child{justify-self:start}
+.calendar-page .calendar-controls a:last-child{justify-self:end}
+.calendar-page .calendar-card{min-width:0;overflow:visible}
+.calendar-page .calendar-grid{min-width:0;grid-template-columns:repeat(7,minmax(0,1fr));gap:0}
+.calendar-page .calendar-weekdays>div{min-width:0;padding:10px 4px;text-align:center}
+.calendar-page .calendar-day{min-width:0;min-height:140px;padding:8px}
+.calendar-date{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.calendar-date strong{font-size:16px}
+.calendar-date[aria-current="date"] strong{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--red);color:white}
+.calendar-weekday{display:none}
+.calendar-events{min-width:0}
+.calendar-page .game-chip{min-width:0;padding:7px;overflow-wrap:anywhere}
+.calendar-page .game-chip span{font-variant-numeric:tabular-nums}
+.calendar-free{margin:0;color:var(--muted);font-size:11px}
+/* O seletor de reservas usa as mesmas classes, mas mantém sete colunas. */
+.user-hero .calendar-picker{min-width:0}
+.user-hero .calendar-picker .calendar-day{min-height:42px}
+@media(max-width:1000px){
+  .calendar-page .calendar-day{padding:5px}
+  .calendar-page .game-chip{padding:5px;border-left-width:2px}
+}
+@media(max-width:700px){
+  .calendar-page .calendar-controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .calendar-page .calendar-controls h2{grid-column:1/-1;grid-row:1;margin:0 0 4px}
+  .calendar-page .calendar-controls a{justify-self:stretch;text-align:center;padding:12px 8px;font-size:12px}
+  .calendar-page .calendar-controls a:first-child,.calendar-page .calendar-controls a:last-child{justify-self:stretch}
+  .calendar-page .calendar-card{padding:10px}
+  .calendar-page .calendar-weekdays{display:none}
+  .calendar-page .calendar-days{grid-template-columns:minmax(0,1fr);gap:8px}
+  .calendar-page .calendar-day{min-height:0;padding:12px;border-radius:10px}
+  .calendar-page .muted-day{display:none}
+  .calendar-page .calendar-date{margin:0 0 8px}
+  .calendar-page .calendar-date strong{font-size:20px}
+  .calendar-page .calendar-weekday{display:inline;color:var(--muted);font-size:12px}
+  .calendar-page .game-chip{padding:10px;margin:6px 0 0;font-size:12px}
+  .calendar-page .game-chip b{font-size:12px}
+  .calendar-page .calendar-free{font-size:12px}
+  .user-hero .calendar-picker .calendar-day{min-height:34px}
+}
