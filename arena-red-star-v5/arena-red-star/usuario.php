@@ -49,8 +49,8 @@ unset($cupomUsuario);
 <main>
 <section id="agendar" class="user-hero section-wrap">
     <div class="hero-copy reveal">
-        <div class="big-callout">GARANTA<br>SEU HORÁRIO</div>
-        <p>Reserve o campo, chame os amigos<br>e venha fazer parte dessa resenha!</p>
+        <h1 class="big-callout">Garanta <span>seu horário</span></h1>
+        <p>Reserve o campo, chame os amigos e venha fazer parte dessa resenha!</p>
         <div class="feature-list"><span><?= rs_icon('ball') ?> Campo society</span><span><?= rs_icon('users') ?> Confraternização</span><span><?= rs_icon('glass') ?> Bebidas</span></div>
     </div>
 
